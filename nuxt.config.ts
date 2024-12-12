@@ -7,16 +7,13 @@ export default defineNuxtConfig({
   extends: [
     './base'
   ],
-  runtimeConfig: {
-    auth: {
-      secret: process.env.NUXT_AUTH_SECRET,
-      clientId: process.env.NUXT_AUTH_GOOGLE_CLIENT_ID,
-      secretId: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
-    }
-  },
   modules: ["@prisma/nuxt", '@nuxt/ui', "nuxt-lodash", 'nuxt-time'],
   prisma: {
-    installStudio: false
+    installStudio: false,
+    // generateClient: false,
+    // installCLI: false,
+    runMigration: false
+
   },
   imports: {
     dirs: [

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prisma:push": "npx prisma db push --schema=./prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma",
     "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -13,9 +13,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^2.18.7",
-    "@prisma/nuxt": "^0.0.35",
-    "@types/randomstring": "^1.3.0",
-    "@types/slug": "^5.0.9",
+    "@prisma/nuxt": "^0.0.31",
     "nuxt": "^3.13.2",
     "nuxt-lodash": "^2.5.3",
     "nuxt-time": "^1.0.2",
@@ -25,6 +23,9 @@
     "vue-router": "latest"
   },
   "devDependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "@types/randomstring": "^1.3.0",
+    "@types/slug": "^5.0.9",
+    "prisma": "^6.0.1"
   }
 }
