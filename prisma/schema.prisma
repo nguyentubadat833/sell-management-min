@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = env("NUXT_DATABASE_URL")
 }
 
 model User {
@@ -16,8 +16,8 @@ model User {
   name     String?
   userType String
 
-  createdBy String
-  createdAt DateTime @default(now())
+  createdBy  String
+  registerAt DateTime @default(now())
 }
 
 model Category {

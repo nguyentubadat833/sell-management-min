@@ -1,19 +1,41 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
+  compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxt/eslint", "@prisma/nuxt"],
-
+  // srcDir: 'src/',
+  extends: [
+    './base'
+  ],
+  runtimeConfig: {
+    auth: {
+      secret: process.env.NUXT_AUTH_SECRET,
+      clientId: process.env.NUXT_AUTH_GOOGLE_CLIENT_ID,
+      secretId: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
+    }
+  },
+  modules: ["@prisma/nuxt", '@nuxt/ui', "nuxt-lodash", 'nuxt-time'],
   prisma: {
-    installStudio: false,
-    installCLI: false,
-    installClient: false,
+    installStudio: false
   },
-
-  css: ['~/assets/css/main.css'],
-
-  future: {
-    compatibilityVersion: 4
+  imports: {
+    dirs: [
+    //   'stores',
+      'composables',
+      'composables/*/index.{ts,js,mjs,mts}',
+      'composables/**/**',
+      // 'utils',
+      // 'utils/*/index.{ts,js,mjs,mts}',
+      // 'utils/**/**',
+      'types',
+      'types/*/index.{ts,js,mjs,mts}',
+      'types/**/**',
+    ]
   },
-
-  compatibilityDate: "2024-11-27"
+  colorMode: {
+    preference: 'light'
+  },
+  experimental: {
+    componentIslands: true
+  },
 })
