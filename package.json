@@ -9,17 +9,22 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "prisma:migrate": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma",
+    "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.16",
     "@nuxt/ui": "3.0.0-alpha.9",
+    "@prisma/nuxt": "^0.0.31-fix-rollup-error",
     "nuxt": "^3.14.1592"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxt/eslint": "^0.7.2",
+    "@prisma/client": "^6.0.1",
     "eslint": "^9.15.0",
+    "prisma": "^6.0.1",
     "typescript": "^5.7.2"
   }
 }

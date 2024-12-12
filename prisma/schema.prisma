@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String?
+  userType String
+
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id         Int    @id @default(autoincrement())
+  code       String @unique @default(cuid())
+  name       String
+  categories String
+
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id   String @id @default(cuid())
+  name String
+
+  categoryCode String
+
+  createdBy String
+  createdAt DateTime @default(now())
+  Stock     Stock[]
+}
+
+model ProductSell {
+  id               BigInt  @id @default(autoincrement())
+  originalPrice    Float
+  promotionDetails String?
+
+  createdBy String
+  createdAt DateTime @default(now())
+  Stock     Stock[]
+}
+
+model PurchaseOrders {
+  id       String  @id @default(uuid())
+  customer String
+  details  String?
+  status   Int     @default(0)
+
+  createdBy String
+  orderAt   DateTime @default(now())
+}
+
+model Payment {
+  id         String  @id @default(uuid())
+  poId       String
+  details    String?
+  totalPrice Float
+  method     Int
+  status     Int     @default(0)
+
+  completeAt DateTime?
+}
+
+model Warehouse {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  createdBy String
+  createdAt DateTime @default(now())
+  Stock     Stock[]
+}
+
+model Stock {
+  id BigInt @id @default(autoincrement())
+
+  inQuantity  Int
+  outQuantity Int?
+  condition   String
+
+  warehouseId   Int
+  productId     String
+  productSellId BigInt?
+
+  createdBy String
+  createdAt DateTime @default(now())
+
+  product     Product      @relation(fields: [productId], references: [id])
+  wharehouse  Warehouse    @relation(fields: [warehouseId], references: [id])
+  ProductSell ProductSell? @relation(fields: [productSellId], references: [id])
+}
