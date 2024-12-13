@@ -7,11 +7,34 @@ export default defineNuxtConfig({
     extends: [
         './base'
     ],
-    modules: ["@prisma/nuxt", '@nuxt/ui', "nuxt-lodash", 'nuxt-time'],
+    runtimeConfig: {
+        auth: {
+            secret: process.env.NUXT_AUTH_SECRET,
+            google: {
+                id: process.env.NUXT_AUTH_GOOGLE_CLIENT_ID,
+                secret: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
+            }
+        }
+    },
+    modules: [
+      "@prisma/nuxt",
+      '@nuxt/ui',
+      "nuxt-lodash",
+      'nuxt-time',
+      '@sidebase/nuxt-auth',
+    ],
+    auth: {
+        provider: {
+            type: 'authjs',
+            trustHost: false,
+            defaultProvider: 'google',
+            addDefaultCallbackUrl: true
+        }
+    },
     prisma: {
         installStudio: false,
         generateClient: false,
-        installCLI: false,
+        // installCLI: false,
         runMigration: false
 
     },
