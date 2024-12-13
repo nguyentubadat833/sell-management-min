@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import UserButton from "~/components/layout/client/UserButton.vue";
+
+const {data: authData} = useAuth()
 
 </script>
 
@@ -11,7 +14,8 @@
         <UButton icon="heroicons:home-solid" color="gray" variant="ghost" class="rounded-lg" @click="navigateTo('/')"/>
         <UButton icon="heroicons:squares-2x2-16-solid" color="gray" variant="ghost" class="rounded-lg"/>
         <UButton icon="heroicons:magnifying-glass-20-solid" color="gray" variant="ghost" class="rounded-lg"/>
-        <UButton icon="heroicons:shopping-cart-16-solid" color="gray" variant="ghost" class="rounded-lg" @click="navigateTo('/cart')"/>
+        <UButton icon="heroicons:shopping-cart-16-solid" color="gray" variant="ghost" class="rounded-lg"
+                 @click="navigateTo('/cart')"/>
         <UButton icon="heroicons:user-16-solid" @click="navigateTo('/auth/signIn')" color="gray" variant="ghost"
                  class="rounded-lg"/>
       </nav>
