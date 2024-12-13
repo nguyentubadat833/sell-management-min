@@ -1,7 +1,8 @@
 import {NuxtAuthHandler} from '#auth'
 import GoogleProvider from 'next-auth/providers/google'
 import prisma from "~/lib/prisma";
-import {EUserType, IUserProfile} from "~/types/TUser";
+import {User} from '@prisma/client'
+import {EUserType, IUserProfile, IUserSession} from "~/types/TUser";
 
 export default NuxtAuthHandler({
     secret: useRuntimeConfig().auth.secret,
@@ -43,11 +44,35 @@ export default NuxtAuthHandler({
         },
         /* on redirect to another url */
         async redirect({url, baseUrl}) {
-            return baseUrl
+            console.log('url', url)
+            console.log('baseUrl', baseUrl)
+            // return baseUrl
+            return url
         },
         /* on session retrival */
         async session({session, user, token}) {
-            return session
+            console.log('session', session)
+            console.log('user', user)
+            console.log('jwt', token)
+            const userType = () => {
+                const emailSession = session?.user?.email
+                if (emailSession) {
+                    return prisma.user.findUnique({
+                        where: {
+                            email: emailSession
+                        },
+                        select: {
+                            userType: true
+                        }
+                    }).then(data => data?.userType)
+                } else {
+                    return null
+                }
+            }
+            return {
+                ...session,
+                userType: await userType() ?? null
+            }
         },
         /* on JWT token creation or mutation */
         async jwt({token, user, account, profile, isNewUser}) {
