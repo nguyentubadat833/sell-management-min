@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <NuxtPage/>
-  </div>
+<div>
+  category
+</div>
 </template>
 
 <style scoped>

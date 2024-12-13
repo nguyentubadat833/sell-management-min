@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <NuxtPage/>
-  </div>
+<div>
+  product
+</div>
 </template>
 
 <style scoped>

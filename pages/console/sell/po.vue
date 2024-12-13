@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <NuxtPage/>
-  </div>
+<div>
+  po
+</div>
 </template>
 
 <style scoped>
