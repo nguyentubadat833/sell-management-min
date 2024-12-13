@@ -10,17 +10,17 @@ datasource db {
   url      = env("NUXT_DATABASE_URL")
 }
 
-model User {
-  id       Int     @id @default(autoincrement())
-  username String? @unique
-  password String?
-  email    String? @unique
-  googleId String? @unique
-  userType String
-  info     String?
-
-  createdBy  String
+model Account {
+  id         Int      @id @default(autoincrement())
+  provider   String
+  providerId String
+  email      String?
+  name       String?
+  profile    String?
+  userType   String
   registerAt DateTime @default(now())
+
+  @@unique([provider, providerId])
 }
 
 model Category {

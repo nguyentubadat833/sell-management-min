@@ -1,8 +1,7 @@
 import {NuxtAuthHandler} from '#auth'
 import GoogleProvider from 'next-auth/providers/google'
 import prisma from "~/lib/prisma";
-import {User} from '@prisma/client'
-import {EUserType, IUserProfile, IUserSession} from "~/types/TUser";
+import {EAuthProvider, EUserType, IUserProfile} from "~/types/TUser";
 
 export default NuxtAuthHandler({
     secret: useRuntimeConfig().auth.secret,
@@ -16,27 +15,35 @@ export default NuxtAuthHandler({
         /* on before signin */
         async signIn({user, account, profile, email, credentials}) {
             if (user && user?.id) {
-                await prisma.user.upsert({
+                await prisma.account.upsert({
                     where: {
-                        googleId: user.id
+                        provider_providerId: {
+                            provider: EAuthProvider.GOOGLE,
+                            providerId: user.id
+                        }
                     },
                     create: {
-                        googleId: user.id,
-                        email: user.email,
-                        info: JSON.stringify({
-                            name: user.name,
+                        provider: EAuthProvider.GOOGLE,
+                        providerId: user.id,
+                        email: user?.email,
+                        name: user?.name,
+                        userType: EUserType.CUSTOMER as string,
+                        profile: JSON.stringify({
                             avatar: user?.image
-                        } as IUserProfile),
-                        userType: EUserType.CUSTOMER,
-                        createdBy: EUserType.SYSTEM
+                        } as IUserProfile)
                     },
-                    update: {}
+                    update: {
+                        name: user?.name,
+                        profile: JSON.stringify({
+                            avatar: user?.image
+                        } as IUserProfile)
+                    }
                 })
-                console.log('user', user)
-                console.log('account', account)
-                console.log('profile', profile)
-                console.log('email', email)
-                console.log('credentials', credentials)
+                // console.log('user', user)
+                // console.log('account', account)
+                // console.log('profile', profile)
+                // console.log('email', email)
+                // console.log('credentials', credentials)
                 return true
             } else {
                 return false
@@ -44,21 +51,22 @@ export default NuxtAuthHandler({
         },
         /* on redirect to another url */
         async redirect({url, baseUrl}) {
-            console.log('url', url)
-            console.log('baseUrl', baseUrl)
+            // console.log('url', url)
+            // console.log('baseUrl', baseUrl)
             // return baseUrl
             return url
         },
         /* on session retrival */
         async session({session, user, token}) {
-            console.log('session', session)
-            console.log('user', user)
-            console.log('jwt', token)
+            // console.log('session', session)
+            // console.log('user', user)
+            // console.log('jwt', token)
             const userType = () => {
                 const emailSession = session?.user?.email
                 if (emailSession) {
-                    return prisma.user.findUnique({
+                    return prisma.account.findFirst({
                         where: {
+                            provider: EAuthProvider.GOOGLE,
                             email: emailSession
                         },
                         select: {
