@@ -6,8 +6,6 @@
 .cache
 dist
 
-prisma/database.db
-
 # Node dependencies
 node_modules
 

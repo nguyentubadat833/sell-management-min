@@ -34,8 +34,9 @@ export default defineNuxtConfig({
         preference: 'light'
     },
     experimental: {
-        componentIslands: {
-            selectiveClient: 'deep'
-        }
+        asyncContext: true,
+        // componentIslands: {
+        //     selectiveClient: 'deep'
+        // }
     },
 })
