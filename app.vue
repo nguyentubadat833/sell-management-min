@@ -3,6 +3,7 @@
   <NuxtLayout>
     <NuxtPage/>
   </NuxtLayout>
+  <UNotifications />
 </template>
 <script setup lang="ts">
 // const route = useRoute()

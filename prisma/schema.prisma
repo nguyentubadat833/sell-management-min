@@ -25,21 +25,22 @@ model Account {
 
 model Category {
   id     Int    @id @default(autoincrement())
-  code   String @unique @default(cuid())
   name   String
   status Int    @default(1)
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
 }
 
 model CategoryTree {
-  id         Int    @id @default(autoincrement())
-  name       String
-  categories String
-  status     Int    @default(1)
+  id     Int     @id @default(autoincrement())
+  name   String
+  info   String?
+  tree   String?
+  order  Int?    @unique
+  status Int     @default(1)
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
 }
 
@@ -49,7 +50,7 @@ model Product {
 
   categoryCode String
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
   Stock     Stock[]
 }
@@ -59,7 +60,7 @@ model ProductSell {
   originalPrice    Float
   promotionDetails String?
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
   Stock     Stock[]
 }
@@ -70,7 +71,7 @@ model PurchaseOrders {
   details  String?
   status   Int     @default(0)
 
-  createdBy String
+  createdBy Int
   orderAt   DateTime @default(now())
 }
 
@@ -89,7 +90,7 @@ model Warehouse {
   id   Int    @id @default(autoincrement())
   name String
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
   Stock     Stock[]
 }
@@ -105,7 +106,7 @@ model Stock {
   productId     String
   productSellId BigInt?
 
-  createdBy String
+  createdBy Int
   createdAt DateTime @default(now())
 
   product     Product      @relation(fields: [productId], references: [id])

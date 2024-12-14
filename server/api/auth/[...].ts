@@ -1,11 +1,13 @@
 import {NuxtAuthHandler} from '#auth'
 import GoogleProvider from 'next-auth/providers/google'
 import prisma from "~/lib/prisma";
+import {Account} from "@prisma/client"
 import {EAuthProvider, EUserType, IUserProfile} from "~/types/TUser";
 
 export default NuxtAuthHandler({
     secret: useRuntimeConfig().auth.secret,
     providers: [
+        // @ts-ignore
         GoogleProvider.default({
             clientId: useRuntimeConfig().auth.google.id,
             clientSecret: useRuntimeConfig().auth.google.secret
@@ -61,26 +63,25 @@ export default NuxtAuthHandler({
             // console.log('session', session)
             // console.log('user', user)
             // console.log('jwt', token)
-            const userType = () => {
-                const emailSession = session?.user?.email
-                if (emailSession) {
-                    return prisma.account.findFirst({
-                        where: {
-                            provider: EAuthProvider.GOOGLE,
-                            email: emailSession
-                        },
-                        select: {
-                            userType: true
-                        }
-                    }).then(data => data?.userType)
-                } else {
-                    return null
+            const emailSession = session?.user?.email
+            let userData: Account | null
+            let response = {
+                ...session
+            } as any
+            if (emailSession) {
+                userData = await prisma.account.findFirst({
+                    where: {
+                        provider: EAuthProvider.GOOGLE,
+                        email: emailSession
+                    }
+                });
+                response = {
+                    ...response,
+                    userId: userData?.id,
+                    userType: userData?.userType
                 }
             }
-            return {
-                ...session,
-                userType: await userType() ?? null
-            }
+            return response
         },
         /* on JWT token creation or mutation */
         async jwt({token, user, account, profile, isNewUser}) {
