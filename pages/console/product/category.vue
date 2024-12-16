@@ -61,7 +61,7 @@ async function saveCategory() {
     await refreshCategoryData()
     isOpenCategoryModal.value = false
   } else {
-    toast.add({title: 'Error'})
+    toast.add({title: 'Error', color: "red"})
   }
 }
 
