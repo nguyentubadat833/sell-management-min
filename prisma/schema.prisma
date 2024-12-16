@@ -29,18 +29,20 @@ model Category {
   status Int    @default(1)
 
   createdBy Int
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  Product   Product[]
 }
 
 model Product {
-  id   String @id @default(cuid())
-  name String
-
-  categoryCode String
+  id         String @id @default(cuid())
+  name       String
+  categoryId Int
 
   createdBy Int
   createdAt DateTime @default(now())
-  Stock     Stock[]
+  stock     Stock[]
+
+  category Category @relation(fields: [categoryId], references: [id])
 }
 
 model ProductSell {
