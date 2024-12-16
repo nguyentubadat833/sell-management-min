@@ -1,7 +1,6 @@
 import prisma from "~/lib/prisma";
 import {ICategoryReq} from "~/types/TCategory";
 import {getUserIdLogged} from "~/server/api/utils/getAuthData";
-import _ from "lodash";
 
 const select = {
     id: true,
@@ -18,7 +17,7 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 name: body.name,
-                status: _.toSafeInteger(body.status)
+                status: body.status
             },
             select: select
         })

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type {ICategoryReq} from "~/types/TCategory";
 
-const tabItems = [{
-  slot: 'category',
-  label: 'Category'
-}, {
-  slot: 'categoryTree',
-  label: 'Category Tree'
-}]
+const categoryOptions: {
+  label: string,
+  value: number
+}[] = [
+  {label: 'Inactive', value: 0},
+  {label: 'Normal', value: 1}
+]
+
 const isLoading = ref(false)
 const toast = useToast()
-
 
 // Category
 const categoryColumns = [
@@ -18,22 +18,18 @@ const categoryColumns = [
   {key: 'status', label: 'Status'},
   {key: 'createdAt', label: 'Created At'}
 ]
-const categoryStatusOptions = [
-  {label: 'Inactive', value: 0},
-  {label: 'Normal', value: 1}
-]
-
 const initCategoryState: ICategoryReq = {
   id: NaN,
   name: '',
   status: NaN
 }
-const categoryState = reactive<ICategoryReq>({...initCategoryState})
+
 const isOpenCategoryModal = ref(false)
+const categoryState = reactive<ICategoryReq>({...initCategoryState})
 const {data: categoryData, refresh: refreshCategoryData} = await useFetch('/api/control/category/findMany')
 
 function getStatusLabel(status: number) {
-  const find = categoryStatusOptions.find(e => e.value === status)
+  const find = categoryOptions.find(e => e.value === status)
   if (find) {
     return find.label
   } else {
@@ -52,6 +48,7 @@ function addCategory() {
 }
 
 async function saveCategory() {
+  console.log(categoryState)
   isLoading.value = true
   const response = await $fetch('/api/control/category/save', {
     method: 'PUT',
@@ -68,31 +65,21 @@ async function saveCategory() {
   }
 }
 
-
 </script>
 
 <template>
   <div>
-    <UTabs :items="tabItems" class="w-full">
-      <template #category>
-        <UCard>
-          <UTable :rows="categoryData" :columns="categoryColumns" @select="selectCategory">
-            <template #status-data="{row}">
-              <span>{{getStatusLabel(row.status)}}</span>
-            </template>
-            <template #createdAt-data="{row}">
-              <NuxtTime :datetime="row.createdAt" day="numeric" month="numeric" year="numeric"/>
-            </template>
-          </UTable>
-          <div class="flex justify-end">
-            <UButton label="Add Category" color="gray" @click="addCategory" :loading="isLoading"/>
-          </div>
-        </UCard>
+    <UTable :rows="categoryData" :columns="categoryColumns" @select="selectCategory">
+      <template #status-data="{row}">
+        <span>{{ getStatusLabel(row.status) }}</span>
       </template>
-      <template #categoryTree>
-        categoryTree
+      <template #createdAt-data="{row}">
+        <NuxtTime :datetime="row.createdAt" day="numeric" month="numeric" year="numeric"/>
       </template>
-    </UTabs>
+    </UTable>
+    <div class="flex justify-end">
+      <UButton label="Add Category" color="gray" @click="addCategory" :loading="isLoading"/>
+    </div>
     <ClientOnly>
       <UModal v-model="isOpenCategoryModal">
         <div class="p-4">
@@ -101,7 +88,7 @@ async function saveCategory() {
               <UInput v-model="categoryState.name"/>
             </UFormGroup>
             <UFormGroup label="Status">
-              <USelect v-model="categoryState.status" :options="categoryStatusOptions" option-attribute="label"
+              <USelect v-model="categoryState.status" :options="categoryOptions" option-attribute="label"
                        value-attribute="value"/>
             </UFormGroup>
             <div class="flex justify-end">

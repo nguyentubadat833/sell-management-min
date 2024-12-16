@@ -32,18 +32,6 @@ model Category {
   createdAt DateTime @default(now())
 }
 
-model CategoryTree {
-  id     Int     @id @default(autoincrement())
-  name   String
-  info   String?
-  tree   String?
-  order  Int?    @unique
-  status Int     @default(1)
-
-  createdBy Int
-  createdAt DateTime @default(now())
-}
-
 model Product {
   id   String @id @default(cuid())
   name String
