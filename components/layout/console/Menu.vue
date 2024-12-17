@@ -24,8 +24,11 @@ const items = [
       navigateTo('/console/product')
     }
   }], [{
-    label: 'Purchase Orders',
-    icon: 'heroicons:document-text'
+    label: 'Orders',
+    icon: 'heroicons:document-text',
+    click: () => {
+      navigateTo('/console/sell/order')
+    }
   }, {
     label: 'Payment',
     icon: 'heroicons:credit-card-solid'

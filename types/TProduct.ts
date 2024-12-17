@@ -1,5 +1,7 @@
-export interface IProductReq{
+export interface IProductReq {
     id?: string
     name: string
-    categoryId: number
+    categoryId: number,
+    originalPrice?: number
+    status?: number
 }

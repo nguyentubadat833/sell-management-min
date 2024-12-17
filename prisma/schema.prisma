@@ -19,12 +19,14 @@ model Account {
   profile    String?
   userType   String
   registerAt DateTime @default(now())
+  Order      Order[]
 
   @@unique([provider, providerId])
 }
 
 model Category {
   id     Int    @id @default(autoincrement())
+  code   String @unique
   name   String
   status Int    @default(1)
 
@@ -34,51 +36,67 @@ model Category {
 }
 
 model Product {
-  id         String @id @default(cuid())
-  name       String
-  categoryId Int
+  id               Int     @id @default(autoincrement())
+  code             String  @default(cuid())
+  categoryId       Int
+  name             String
+  originalPrice    Float?
+  promotionDetails String?
+  status           Int     @default(0)
 
   createdBy Int
   createdAt DateTime @default(now())
-  stock     Stock[]
 
+  stock    Stock[]
   category Category @relation(fields: [categoryId], references: [id])
 }
 
-model ProductSell {
-  id               BigInt  @id @default(autoincrement())
-  originalPrice    Float
-  promotionDetails String?
+model Order {
+  id              BigInt    @id @default(autoincrement())
+  orderCode       String    @default(uuid())
+  customerId      Int
+  totalAmount     Float?
+  shippingAddress String?
+  shippingMethod  String
+  currency        String
+  status          Int       @default(0)
+  orderAt         DateTime  @default(now())
+  createdBy       Int
+  createdAt       DateTime  @default(now())
+  udpatedAt       DateTime?
 
-  createdBy Int
-  createdAt DateTime @default(now())
-  Stock     Stock[]
+  details OrderDetail[]
+  payment Payment?
+
+  customer Account @relation(fields: [customerId], references: [id])
 }
 
-model PurchaseOrders {
-  id       String  @id @default(uuid())
-  customer String
-  details  String?
-  status   Int     @default(0)
+model OrderDetail {
+  id        BigInt  @id @default(autoincrement())
+  orderId   BigInt?
+  productId Int
+  quantity  Int
+  price     Float
 
-  createdBy Int
-  orderAt   DateTime @default(now())
+  Order Order? @relation(fields: [orderId], references: [id])
 }
 
 model Payment {
-  id         String  @id @default(uuid())
-  poId       String
-  details    String?
-  totalPrice Float
-  method     Int
-  status     Int     @default(0)
+  id            BigInt    @id @default(autoincrement())
+  orderId       BigInt    @unique
+  transactionId String
+  amount        Float
+  currency      String
+  paymentMethod String
+  status        Int       @default(0)
+  paymentAt     DateTime?
 
-  completeAt DateTime?
+  order Order @relation(fields: [orderId], references: [id])
 }
 
 model Warehouse {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @unique
 
   createdBy Int
   createdAt DateTime @default(now())
@@ -92,14 +110,12 @@ model Stock {
   outQuantity Int?
   condition   String
 
-  warehouseId   Int
-  productId     String
-  productSellId BigInt?
+  warehouseId Int
+  productId   Int
 
   createdBy Int
   createdAt DateTime @default(now())
 
-  product     Product      @relation(fields: [productId], references: [id])
-  wharehouse  Warehouse    @relation(fields: [warehouseId], references: [id])
-  ProductSell ProductSell? @relation(fields: [productSellId], references: [id])
+  wharehouse Warehouse? @relation(fields: [warehouseId], references: [id])
+  Product    Product    @relation(fields: [productId], references: [id])
 }

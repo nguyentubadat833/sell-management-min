@@ -1,5 +1,5 @@
 export interface ICategoryReq {
-    id?: number
+    code?: string
     name: string
     status?: number
 }

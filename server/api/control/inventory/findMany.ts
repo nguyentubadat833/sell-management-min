@@ -1,14 +1,14 @@
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async () => {
-    return prisma.product.findMany({
+    return prisma.stock.findMany({
         include: {
-            category: {
+            product: {
                 select: {
                     id: true,
-                    name: true,
+                    name: true
                 }
-            },
+            }
         }
     })
 })

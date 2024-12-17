@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {ICategoryReq} from "~/types/TCategory";
 
+
 const categoryOptions: {
   label: string,
   value: number
@@ -14,12 +15,13 @@ const toast = useToast()
 
 // Category
 const categoryColumns = [
+  {key: 'code', label: 'Code'},
   {key: 'name', label: 'Name'},
   {key: 'status', label: 'Status'},
   {key: 'createdAt', label: 'Created At'}
 ]
 const initCategoryState: ICategoryReq = {
-  id: NaN,
+  code: '',
   name: '',
   status: NaN
 }
@@ -48,7 +50,7 @@ function addCategory() {
 }
 
 async function saveCategory() {
-  console.log(categoryState)
+  if (!categoryState.name) return
   isLoading.value = true
   const response = await $fetch('/api/control/category/save', {
     method: 'PUT',
@@ -84,8 +86,11 @@ async function saveCategory() {
       <UModal v-model="isOpenCategoryModal">
         <div class="p-4">
           <UForm :state="categoryState" class="space-y-5" @submit.prevent="saveCategory">
-            <UFormGroup label="Name">
-              <UInput v-model="categoryState.name"/>
+            <UFormGroup label="Code">
+              <UInput disabled v-model="categoryState.code"/>
+            </UFormGroup>
+            <UFormGroup label="Name" :error="!categoryState.name">
+              <UInput v-model="categoryState.name" placeholder="Enter category name"/>
             </UFormGroup>
             <UFormGroup label="Status">
               <USelect v-model="categoryState.status" :options="categoryOptions" option-attribute="label"

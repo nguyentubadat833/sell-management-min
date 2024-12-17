@@ -8,6 +8,10 @@ export default defineNuxtConfig({
         './base'
     ],
     runtimeConfig: {
+        app: {
+            isUseWarehouse: process.env.NUXT_APP_IS_USE_WAREHOUSE ?? false,
+            isUseReceiveInventory: process.env.NUXT_APP_IS_USE_RECEIVE_INVENTORY ?? false,
+        },
         auth: {
             secret: process.env.NUXT_AUTH_SECRET,
             google: {
@@ -17,11 +21,11 @@ export default defineNuxtConfig({
         }
     },
     modules: [
-      "@prisma/nuxt",
-      '@nuxt/ui',
-      "nuxt-lodash",
-      'nuxt-time',
-      '@sidebase/nuxt-auth',
+        "@prisma/nuxt",
+        '@nuxt/ui',
+        "nuxt-lodash",
+        'nuxt-time',
+        '@sidebase/nuxt-auth',
     ],
     auth: {
         provider: {
