@@ -1,7 +1,5 @@
 import prisma from "~/lib/prisma";
-import {Prisma, Product} from '@prisma/client'
-
-import {getUserIdLogged} from "~/server/api/utils/getAuthData";
+import {Prisma} from '@prisma/client'
 import {IProductReq} from "~/types/TProduct";
 import {toSafeInteger} from "lodash-es";
 
@@ -21,7 +19,14 @@ export default defineEventHandler(async (event) => {
                 name: body.name,
                 categoryId: body.categoryId,
                 originalPrice: body?.originalPrice ? parseFloat(String(body.originalPrice)) : undefined,
-                status: toSafeInteger(body.status)
+                status: toSafeInteger(body.status),
+                images: body?.images && body.images.length > 0 ? {
+                    connect: body.images.map(imageId => {
+                        return {
+                            id: imageId
+                        }
+                    })
+                } : undefined
             },
             select: select
         })
@@ -32,7 +37,14 @@ export default defineEventHandler(async (event) => {
                 categoryId: body.categoryId,
                 originalPrice: body?.originalPrice ? parseFloat(String(body.originalPrice)) : undefined,
                 status: body?.status ? toSafeInteger(body.status) : undefined,
-                createdBy: await getUserIdLogged(event)
+                createdBy: await getUserIdLogged(event),
+                images: body?.images && body.images.length > 0 ? {
+                    connect: body.images.map(imageId => {
+                        return {
+                            id: imageId
+                        }
+                    })
+                } : undefined
             },
             select: select
         })

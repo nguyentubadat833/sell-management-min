@@ -10,6 +10,17 @@ datasource db {
   url      = env("NUXT_DATABASE_URL")
 }
 
+model Image {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  location  String
+  uploadAt  DateTime @default(now())
+  uploadBy  Int
+  productId Int?
+
+  Product Product? @relation(fields: [productId], references: [id])
+}
+
 model Account {
   id         Int      @id @default(autoincrement())
   provider   String
@@ -47,6 +58,7 @@ model Product {
   createdBy Int
   createdAt DateTime @default(now())
 
+  images   Image[]
   stock    Stock[]
   category Category @relation(fields: [categoryId], references: [id])
 }

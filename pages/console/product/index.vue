@@ -20,19 +20,23 @@ const productCols = [
   {key: 'createdAt', label: 'Created At'}
 ]
 const initProductState = {
-  id: '',
+  id: NaN,
   name: '',
   category: {} as any,
   originalPrice: 0,
-  status: NaN
+  status: NaN,
+  images: [] as { name: string, location: string }[],
 }
 
+const {handleFileInput, files} = useFileStorage()
 const toast = useToast()
 const isOpenProductModal = ref(false)
 const isLoading = ref(false)
 const productState = reactive({...initProductState})
 const {data: productData, refresh: refreshProductData} = await useFetch('/api/control/product/findMany')
 const {data: categoryData} = await useFetch('/api/control/category/findMany')
+
+console.log(productData.value)
 
 function addProduct() {
   useAssign(productState, initProductState)
@@ -41,6 +45,19 @@ function addProduct() {
 
 async function saveProduct() {
   if (!productState.name || !productState.category?.id) return
+  let images: number[] = []
+  if (files.value.length > 0) {
+    const response = await $fetch('/api/file/product/upload', {
+      method: 'POST',
+      body: {
+        files: files.value
+      }
+    })
+    if (response.length > 0) {
+      images = [...response]
+    }
+    console.log(images)
+  }
   const response = await $fetch('/api/control/product/save', {
     method: 'PUT',
     body: {
@@ -48,9 +65,11 @@ async function saveProduct() {
       name: productState.name,
       categoryId: productState.category.id,
       originalPrice: productState?.originalPrice,
-      status: productState?.status
+      status: productState?.status,
+      images: images
     } as IProductReq
   })
+
   if (response) {
     await refreshProductData()
     toast.add({title: 'Success'})
@@ -108,6 +127,10 @@ function selectProduct(data: any) {
             <UFormGroup label="Status">
               <USelect v-model="productState.status" :options="statusOptions" option-attribute="label"
                        value-attribute="value"/>
+            </UFormGroup>
+            <UFormGroup label="Images">
+              <NuxtImg v-for="image in productState.images" :src="`/images/product/${image.name}`" width="30px"/>
+              <UInput type="file" size="sm" icon="i-heroicons-folder" multiple @input="handleFileInput"/>
             </UFormGroup>
             <div class="flex justify-between">
               <UButton label="Submit" type="submit"/>

@@ -26,6 +26,7 @@ export default defineNuxtConfig({
         "nuxt-lodash",
         'nuxt-time',
         '@sidebase/nuxt-auth',
+        'nuxt-file-storage'
     ],
     auth: {
         provider: {
@@ -34,6 +35,9 @@ export default defineNuxtConfig({
             defaultProvider: 'google',
             addDefaultCallbackUrl: true
         }
+    },
+    fileStorage: {
+        mount: process.env.NUXT_APP_STORAGE_FILE_MOUNT
     },
     prisma: {
         installStudio: false,
@@ -65,5 +69,12 @@ export default defineNuxtConfig({
         // componentIslands: {
         //     selectiveClient: 'deep'
         // }
+    },
+    vite: {
+        resolve: {
+            alias: {
+                '.prisma/client/index-browser': './node_modules/.prisma/client/index-browser.js',
+            },
+        },
     },
 })

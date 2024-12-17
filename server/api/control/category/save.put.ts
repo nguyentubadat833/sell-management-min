@@ -1,6 +1,5 @@
 import prisma from "~/lib/prisma";
 import {ICategoryReq} from "~/types/TCategory";
-import {getUserIdLogged} from "~/server/api/utils/getAuthData";
 import {toSafeInteger} from "lodash-es";
 import * as randomstring from "randomstring";
 
