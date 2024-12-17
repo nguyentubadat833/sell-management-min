@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type {IProductReq} from "~/types/TProduct";
+import type {IProductRemoveImage, IProductReq} from "~/types/TProduct";
 
 const statusOptions: {
   label: string,
@@ -25,7 +25,7 @@ const initProductState = {
   category: {} as any,
   originalPrice: 0,
   status: NaN,
-  images: [] as { name: string, location: string }[],
+  images: [] as { id: number, name: string, location: string }[],
 }
 
 const {handleFileInput, files} = useFileStorage()
@@ -84,6 +84,38 @@ function selectProduct(data: any) {
   isOpenProductModal.value = true
 }
 
+async function removeImage(imageId: number) {
+  async function del() {
+    const result = await $fetch('/api/file/delete', {
+      method: 'DELETE',
+      params: {
+        productId: productState.id,
+        imageId: imageId
+      } as IProductRemoveImage
+    })
+    if (result) {
+      const index = productState.images.findIndex(e => e.id === imageId)
+      productState.images.splice(index, 1)
+      toast.add({title: 'Success'})
+    } else {
+      toast.add({title: 'Error'})
+    }
+  }
+
+  toast.add({
+    title: 'Delete image',
+    actions: [
+      {
+        label: 'No',
+      },
+      {
+        label: 'Yes',
+        click: async () => await del()
+      }
+    ]
+  })
+}
+
 </script>
 <template>
   <div>
@@ -115,7 +147,7 @@ function selectProduct(data: any) {
               >
                 <template #option="{ option: category }">
                   <div class="flex gap-3">
-                    <span class="truncate">{{ category.code }}</span>
+                    <span class="truncate w-24">{{ category.code }}</span>
                     <span class="truncate">{{ category.name }}</span>
                   </div>
                 </template>
@@ -129,10 +161,30 @@ function selectProduct(data: any) {
                        value-attribute="value"/>
             </UFormGroup>
             <UFormGroup label="Images">
-              <NuxtImg v-for="image in productState.images" :src="`/images/product/${image.name}`" width="30px"/>
+              <!--              <div class="grid grid-cols-4 auto-rows-[1fr] gap-2 mb-3 mt-1">-->
+              <!--                <NuxtImg-->
+              <!--                    v-for="image in productState.images"-->
+              <!--                    :src="`/images/product/${image.name}`"-->
+              <!--                    class="w-full h-full object-cover"-->
+              <!--                />-->
+              <!--              </div>-->
+              <div class="grid grid-cols-3 gap-2 mb-3 mt-2 max-h-60 overflow-hidden overflow-y-auto">
+                <div
+                    v-for="image in productState.images"
+                    :key="image.name"
+                    class="relative group">
+                  <NuxtImg :src="joinPath('/images', image.location, image.name)" class="w-full h-auto object-cover"/>
+                  <Icon @click="removeImage(image.id)"
+                        class="absolute right-1 top-1 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        name="heroicons:x-circle"
+                        size="30"
+                  />
+                </div>
+              </div>
+
               <UInput type="file" size="sm" icon="i-heroicons-folder" multiple @input="handleFileInput"/>
             </UFormGroup>
-            <div class="flex justify-between">
+            <div class="flex justify-end">
               <UButton label="Submit" type="submit"/>
             </div>
           </UForm>

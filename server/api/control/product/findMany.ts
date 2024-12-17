@@ -11,6 +11,7 @@ export default defineEventHandler(async () => {
             },
             images: {
                 select: {
+                    id: true,
                     name: true,
                     location: true
                 }

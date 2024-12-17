@@ -6,3 +6,8 @@ export interface IProductReq {
     status?: number
     images?: number[]
 }
+
+export interface IProductRemoveImage {
+    productId: number
+    imageId: number
+}

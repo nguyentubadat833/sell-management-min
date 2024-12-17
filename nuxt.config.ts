@@ -11,6 +11,7 @@ export default defineNuxtConfig({
         app: {
             isUseWarehouse: process.env.NUXT_APP_IS_USE_WAREHOUSE ?? false,
             isUseReceiveInventory: process.env.NUXT_APP_IS_USE_RECEIVE_INVENTORY ?? false,
+            fileStorageRoot: process.env.NUXT_APP_STORAGE_FILE_MOUNT
         },
         auth: {
             secret: process.env.NUXT_AUTH_SECRET,
@@ -21,12 +22,13 @@ export default defineNuxtConfig({
         }
     },
     modules: [
-        "@prisma/nuxt",
-        '@nuxt/ui',
-        "nuxt-lodash",
-        'nuxt-time',
-        '@sidebase/nuxt-auth',
-        'nuxt-file-storage'
+      "@prisma/nuxt",
+      '@nuxt/ui',
+      "nuxt-lodash",
+      'nuxt-time',
+      '@sidebase/nuxt-auth',
+      'nuxt-file-storage',
+      '@nuxt/image',
     ],
     auth: {
         provider: {
