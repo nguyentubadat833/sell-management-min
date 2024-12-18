@@ -22,13 +22,13 @@ export default defineNuxtConfig({
         }
     },
     modules: [
-      "@prisma/nuxt",
-      '@nuxt/ui',
-      "nuxt-lodash",
-      'nuxt-time',
-      '@sidebase/nuxt-auth',
-      'nuxt-file-storage',
-      '@nuxt/image',
+        "@prisma/nuxt",
+        '@nuxt/ui',
+        "nuxt-lodash",
+        'nuxt-time',
+        '@sidebase/nuxt-auth',
+        'nuxt-file-storage',
+        '@nuxt/image',
     ],
     auth: {
         provider: {
@@ -79,4 +79,17 @@ export default defineNuxtConfig({
             },
         },
     },
+    app: {
+        head: {
+            link: [{
+                href: 'https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css',
+                rel: 'stylesheet'
+            }],
+            script: [
+                {
+                    src: 'https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js'
+                }
+            ]
+        }
+    }
 })
