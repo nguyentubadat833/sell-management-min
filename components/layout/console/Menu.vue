@@ -40,12 +40,21 @@ const items = [
     }
   }]
 ]
+
+const title = computed(() => {
+  const name = useRoute().meta?.name
+  if (name) {
+    return `Console - ${name}`
+  } else {
+    return 'Console'
+  }
+})
 </script>
 
 <template>
   <div class="flex justify-between">
     <div class="flex items-center">
-      <span class="font-bold text-2xl">Sell Management</span>
+      <span class="font-bold text-2xl">{{ title }}</span>
     </div>
     <div class="flex items-center justify-end gap-5">
       <UDropdown :items="items" :popper="{ placement: 'bottom-start' }">

@@ -2,6 +2,10 @@
 
 import type {IProductRemoveImage, IProductReq} from "~/types/TProduct";
 
+definePageMeta({
+  name: 'Product Management'
+})
+
 const statusOptions: {
   label: string,
   value: number
@@ -28,13 +32,33 @@ const initProductState = {
   images: [] as { id: number, name: string, location: string }[],
 }
 
+const q = ref('')
 const {handleFileInput, files} = useFileStorage()
 const toast = useToast()
 const isOpenProductModal = ref(false)
 const isLoading = ref(false)
 const productState = reactive({...initProductState})
 const {data: productData, refresh: refreshProductData} = await useFetch('/api/control/product/findMany')
-const {data: categoryData} = await useFetch('/api/control/category/findMany')
+const {data: categoryData} = await useFetch('/api/control/category/findMany', {
+  transform(input: any[]){
+    return input.filter(e => e.status === 1)
+  }
+})
+const filteredProductRows = computed(() => {
+  if (isArray(productData.value)) {
+    if (!q.value) {
+      return productData.value
+    }
+
+    return productData.value.filter((category) => {
+      return Object.values(category).some((value) => {
+        return removeAccents(String(value)).toLowerCase().includes(removeAccents(q.value).toLowerCase())
+      })
+    })
+  } else {
+    return []
+  }
+})
 
 console.log(productData.value)
 
@@ -118,8 +142,11 @@ async function removeImage(imageId: number) {
 
 </script>
 <template>
-  <div>
-    <UTable :rows="productData" :columns="productCols" @select="selectProduct" :sort="sort">
+  <div class="space-y-7">
+    <div class="flex px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
+      <UInput v-model="q" placeholder="Filter with name..."/>
+    </div>
+    <UTable :rows="filteredProductRows" :columns="productCols" @select="selectProduct" :sort="sort" class="max-h-[70vh]">
       <template #createdAt-data="{row}">
         <NuxtTime :datetime="row.createdAt" day="numeric" month="numeric" year="numeric"/>
       </template>

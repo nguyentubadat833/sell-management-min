@@ -1,5 +1,7 @@
 <script setup lang="ts">
-
+definePageMeta({
+  name: 'Order Management'
+})
 </script>
 
 <template>

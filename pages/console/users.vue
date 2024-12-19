@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {Account} from '@prisma/client'
+definePageMeta({
+  name: 'User Management'
+})
 
 const columns = [
   {key: 'provider', label: 'Provider'},

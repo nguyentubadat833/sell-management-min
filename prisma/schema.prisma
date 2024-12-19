@@ -39,6 +39,7 @@ model Category {
   id     Int    @id @default(autoincrement())
   code   String @unique
   name   String
+  alias  String @unique
   status Int    @default(1)
 
   createdBy Int

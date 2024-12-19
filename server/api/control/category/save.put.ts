@@ -2,6 +2,7 @@ import prisma from "~/lib/prisma";
 import {ICategoryReq} from "~/types/TCategory";
 import {toSafeInteger} from "lodash-es";
 import * as randomstring from "randomstring";
+import slug from "slug";
 
 const select = {
     id: true,
@@ -30,8 +31,9 @@ export default defineEventHandler(async (event) => {
                     charset: 'alphabetic'
                 }).toUpperCase(),
                 name: body.name,
+                alias: slug(body.name),
                 createdBy: await getUserIdLogged(event),
-                status: toSafeInteger(body?.status)
+                status: toSafeInteger(body?.status) ?? 1
             },
             select: select
         })

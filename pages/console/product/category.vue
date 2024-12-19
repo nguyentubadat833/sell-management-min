@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type {ICategoryReq} from "~/types/TCategory";
 
+definePageMeta({
+  name: 'Category Management'
+})
 
 const categoryOptions: {
   label: string,
@@ -13,22 +16,42 @@ const categoryOptions: {
 const isLoading = ref(false)
 const toast = useToast()
 
-// Category
+const sort = ref({
+  column: 'createdAt',
+  direction: 'desc'
+})
+
 const categoryColumns = [
   {key: 'code', label: 'Code'},
   {key: 'name', label: 'Name'},
   {key: 'status', label: 'Status'},
-  {key: 'createdAt', label: 'Created At'}
+  {key: 'createdAt', label: 'Created At', sortable: true}
 ]
 const initCategoryState: ICategoryReq = {
   code: '',
   name: '',
-  status: NaN
+  status: 1
 }
 
+const q = ref('')
 const isOpenCategoryModal = ref(false)
 const categoryState = reactive<ICategoryReq>({...initCategoryState})
 const {data: categoryData, refresh: refreshCategoryData} = await useFetch('/api/control/category/findMany')
+const filteredRows = computed(() => {
+  if (isArray(categoryData.value)) {
+    if (!q.value) {
+      return categoryData.value
+    }
+
+    return categoryData.value.filter((category) => {
+      return Object.values(category).some((value) => {
+        return removeAccents(String(value)).toLowerCase().includes(removeAccents(q.value).toLowerCase())
+      })
+    })
+  } else {
+    return []
+  }
+})
 
 function getStatusLabel(status: number) {
   const find = categoryOptions.find(e => e.value === status)
@@ -70,8 +93,11 @@ async function saveCategory() {
 </script>
 
 <template>
-  <div>
-    <UTable :rows="categoryData" :columns="categoryColumns" @select="selectCategory">
+  <div class="space-y-7">
+    <div class="flex px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
+      <UInput v-model="q" placeholder="Filter with name..."/>
+    </div>
+    <UTable :rows="filteredRows" :columns="categoryColumns" @select="selectCategory" :sort="sort" class="max-h-[70vh]">
       <template #status-data="{row}">
         <span>{{ getStatusLabel(row.status) }}</span>
       </template>

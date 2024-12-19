@@ -1,13 +1,11 @@
 <script setup lang="ts">
-definePageMeta({
-  name: 'Payment Management'
-})
+
 </script>
 
 <template>
-  <div>
-
-  </div>
+<div>
+  about
+</div>
 </template>
 
 <style scoped>
