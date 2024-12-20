@@ -65,11 +65,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="absolute bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen w-full py-5">
+  <div class="absolute bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen w-full py-10">
     <header class="fixed w-full space-y-4">
       <nav
           class="md:w-[23rem] w-[17rem] h-[3rem] p-2 mx-auto flex justify-between transition-all duration-500 ease-in-out
-          bg-background/75 backdrop-blur border dark:border-2 rounded-2xl z-40 border-gray-200 dark:border-gray-700">
+          bg-background/75 backdrop-blur border dark:border-2 rounded-2xl z-50 border-gray-200 dark:border-gray-700">
         <!--      <nav-->
         <!--          class="md:w-[23rem] w-[17rem] hover:md:w-[25rem] hover:w-[20rem] h-[3rem] p-2 mx-auto flex justify-between transition-all duration-500 ease-in-out-->
         <!--          bg-background/75 backdrop-blur border rounded-2xl z-40 border-gray-200 dark:border-gray-800 ">-->
@@ -89,13 +89,13 @@ onMounted(() => {
 
       </nav>
       <nav v-if="mainMenu" v-show="isShowMainMenu"
-           class="md:w-[23rem] w-[17rem] p-2 mx-auto transition-all duration-500 ease-in-out backdrop-blur-lg border rounded-md z-40 border-gray-200 dark:border-gray-500 ">
+           class="md:w-[23rem] w-[17rem] p-2 mx-auto transition-all duration-500 ease-in-out backdrop-blur-lg border rounded-md z-50 border-gray-200 dark:border-gray-500 ">
         <div class="main-menu-action-item flex gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer" v-for="item in mainMenu">
           <span>{{ item?.name }}</span>
         </div>
       </nav>
       <nav v-if="authData && authData?.user" v-show="isShowUserMenu"
-           class="md:w-[23rem] w-[17rem] p-2 mx-auto transition-all duration-500 ease-in-out backdrop-blur-lg border rounded-md z-40 border-gray-200 dark:border-gray-500 ">
+           class="md:w-[23rem] w-[17rem] p-2 mx-auto transition-all duration-500 ease-in-out backdrop-blur-lg border rounded-md z-50 border-gray-200 dark:border-gray-500 ">
         <div>
           <div class="user-menu-action-item" v-for="item in userNavItems"
                @click="!item.split  && typeof item.click === 'function' ? item.click() : null">
@@ -111,8 +111,8 @@ onMounted(() => {
         </div>
       </nav>
     </header>
-    <main class="px-3 pt-[5rem]">
-      <div class="w-full xl:w-[60vw] mx-auto">
+    <main class="px-3 mt-24">
+      <div class="w-full xl:w-[70vw] mx-auto">
         <NuxtPage/>
       </div>
     </main>
