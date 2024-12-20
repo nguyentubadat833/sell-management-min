@@ -66,9 +66,8 @@ onMounted(() => {
           </span>
           <div class="flex flex-col gap-3">
             <div class="flex justify-between">
-              <div class="sm:text-lg font-bold text-orange-700 tracking-wider">
+              <div class="font-bold text-orange-700 tracking-wider">
                 <span>{{ formatNumber(product?.originalPrice) }}</span>
-                <span class="text-sm sm:text-base"> vnđ</span>
               </div>
               <div class="flex items-center gap-1 text-gray-600 dark:text-white">
                 <Icon name="heroicons:shopping-bag" size="18"/>

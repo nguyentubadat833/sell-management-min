@@ -35,7 +35,12 @@ export default defineEventHandler(async () => {
                     location: true
                 }
             }
-        }
+        },
+        orderBy: [
+            {
+                createdAt: 'desc'
+            }
+        ]
     })
     return indexData
 })

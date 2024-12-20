@@ -2,6 +2,7 @@ import prisma from "~/lib/prisma";
 import {Prisma} from '@prisma/client'
 import {IProductReq} from "~/types/TProduct";
 import {toSafeInteger} from "lodash-es";
+import slug from "slug";
 
 const select: Prisma.ProductSelect = {
     id: true,
@@ -17,6 +18,7 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 name: body.name,
+                alias: slug(body.name),
                 categoryId: body.categoryId,
                 originalPrice: body?.originalPrice ? parseFloat(String(body.originalPrice)) : undefined,
                 status: toSafeInteger(body.status),
@@ -34,6 +36,7 @@ export default defineEventHandler(async (event) => {
         return prisma.product.create({
             data: {
                 name: body.name,
+                alias: slug(body.name),
                 categoryId: body.categoryId,
                 originalPrice: body?.originalPrice ? parseFloat(String(body.originalPrice)) : undefined,
                 status: body?.status ? toSafeInteger(body.status) : undefined,

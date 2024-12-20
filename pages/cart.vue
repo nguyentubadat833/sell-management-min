@@ -11,8 +11,7 @@ const sumPrice = computed(() => {
     })
     return formatNumber(useSum(arrayPrice))
   }
-  return 0
-
+  return `0 vnđ`
 })
 
 async function getProducts() {
@@ -89,7 +88,7 @@ onBeforeMount(async () => {
                   <span class="text-orange-600 font-bold tracking-wider">{{
                       formatNumber(product?.originalPrice)
                     }}</span>
-                  <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.code)"/>
+                  <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.code)" label="Xóa"/>
                 </div>
 
               </div>

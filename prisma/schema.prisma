@@ -53,6 +53,7 @@ model Product {
   code             String  @default(cuid())
   categoryId       Int
   name             String
+  alias            String  @unique
   originalPrice    Float?
   promotionDetails String?
   status           Int     @default(0)

@@ -1,4 +1,4 @@
 export default function (number: number) {
     const local = 'vi-VN'
-    return Intl.NumberFormat(local).format(number)
+    return Intl.NumberFormat(local).format(number) + " vnđ"
 }

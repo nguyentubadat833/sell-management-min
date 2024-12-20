@@ -28,3 +28,25 @@ export interface ICartDataRes {
         }[]
     }[]
 }
+
+export interface IClientCategory {
+    // code: string
+    name: string
+    alias: string
+}
+
+export interface IClientSearchData {
+    categories: IClientCategory[]
+    products: {
+        name: string
+        alias: string
+        category: {
+            name: string
+            alias: string
+        },
+        images: {
+            name: string,
+            location: string
+        }[]
+    }[]
+}
