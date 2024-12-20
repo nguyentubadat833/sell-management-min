@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type {IProductRemoveImage, IProductReq} from "~/types/TProduct";
+import {da} from "cronstrue/dist/i18n/locales/da";
 
 definePageMeta({
   name: 'Product Management'
@@ -14,14 +15,15 @@ const statusOptions: {
   {label: 'Normal', value: 1}
 ]
 const sort = ref({
-  column: 'category.name',
+  column: 'createdAt',
   direction: 'desc'
 })
 const productCols = [
   {key: 'name', label: 'Name'},
-  {key: 'category.name', label: 'Category Name', sortable: true},
-  {key: 'originalPrice', label: 'Original Price'},
-  {key: 'createdAt', label: 'Created At'}
+  {key: 'category.name', label: 'Category Name'},
+  {key: 'originalPrice', label: 'Original Price', sortable: true},
+  {key: 'createdAt', label: 'Created At', sortable: true},
+  {key: 'status', label: 'Status'}
 ]
 const initProductState = {
   id: NaN,
@@ -32,15 +34,16 @@ const initProductState = {
   images: [] as { id: number, name: string, location: string }[],
 }
 
-const q = ref('')
 const {handleFileInput, files} = useFileStorage()
+const q = ref('')
+const urls = ref([''])
 const toast = useToast()
 const isOpenProductModal = ref(false)
 const isLoading = ref(false)
 const productState = reactive({...initProductState})
 const {data: productData, refresh: refreshProductData} = await useFetch('/api/control/product/findMany')
 const {data: categoryData} = await useFetch('/api/control/category/findMany', {
-  transform(input: any[]){
+  transform(input: any[]) {
     return input.filter(e => e.status === 1)
   }
 })
@@ -60,27 +63,35 @@ const filteredProductRows = computed(() => {
   }
 })
 
-console.log(productData.value)
+function getStatusLabel(status: number) {
+  const find = statusOptions.find(e => e.value === status)
+  if (find) {
+    return find.label
+  } else {
+    return 'unknown'
+  }
+}
 
 function addProduct() {
   useAssign(productState, initProductState)
+  urls.value = ['']
   isOpenProductModal.value = true
 }
 
 async function saveProduct() {
   if (!productState.name || !productState.category?.id) return
   let images: number[] = []
-  if (files.value.length > 0) {
+  if (files.value.length > 0 || urls.value.length > 0) {
     const response = await $fetch('/api/file/product/upload', {
       method: 'POST',
       body: {
-        files: files.value
+        files: files.value,
+        urls: urls.value.filter(Boolean)
       }
     })
     if (response.length > 0) {
       images = [...response]
     }
-    console.log(images)
   }
   const response = await $fetch('/api/control/product/save', {
     method: 'PUT',
@@ -97,10 +108,13 @@ async function saveProduct() {
   if (response) {
     await refreshProductData()
     toast.add({title: 'Success'})
+    useAssign(productState, initProductState)
+    urls.value = ['']
     isOpenProductModal.value = false
   } else {
     toast.add({title: 'Error', color: "red"})
   }
+  console.log(productState)
 }
 
 function selectProduct(data: any) {
@@ -146,7 +160,11 @@ async function removeImage(imageId: number) {
     <div class="flex px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
       <UInput v-model="q" placeholder="Filter with name..."/>
     </div>
-    <UTable :rows="filteredProductRows" :columns="productCols" @select="selectProduct" :sort="sort" class="max-h-[70vh]">
+    <UTable :rows="filteredProductRows" :columns="productCols" @select="selectProduct" :sort="sort"
+            class="max-h-[70vh]">
+      <template #status-data="{row}">
+        <span>{{ getStatusLabel(row.status) }}</span>
+      </template>
       <template #createdAt-data="{row}">
         <NuxtTime :datetime="row.createdAt" day="numeric" month="numeric" year="numeric"/>
       </template>
@@ -209,7 +227,15 @@ async function removeImage(imageId: number) {
                 </div>
               </div>
 
-              <UInput type="file" size="sm" icon="i-heroicons-folder" multiple @input="handleFileInput"/>
+              <UInput type="file" size="sm" icon="i-heroicons-folder" multiple @input="handleFileInput" class="mb-3"/>
+              <div class="space-y-3">
+                <div v-for="(url, index) in urls" class="flex gap-2 items-center">
+                  <UInput v-model="urls[index]" placeholder="Enter url" class="w-full"/>
+                  <Icon @click="urls.push('')" name="heroicons:plus-20-solid" size="20" v-if="index === urls.length - 1"
+                        class="cursor-pointer"/>
+                </div>
+              </div>
+
             </UFormGroup>
             <div class="flex justify-end">
               <UButton label="Submit" type="submit"/>

@@ -13,6 +13,7 @@ datasource db {
 model Image {
   id        Int      @id @default(autoincrement())
   name      String   @unique
+  link      String?
   location  String
   uploadAt  DateTime @default(now())
   uploadBy  Int

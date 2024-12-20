@@ -38,6 +38,12 @@ const items = [
     click: () => {
       navigateTo('/console/inventory')
     }
+  }], [{
+    label: 'Banner',
+    icon: 'heroicons:rectangle-group-16-solid',
+    click: () => {
+      navigateTo('/console/banner')
+    }
   }]
 ]
 

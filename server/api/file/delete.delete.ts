@@ -5,9 +5,8 @@ import path from "node:path";
 import _ from "lodash";
 
 export default defineEventHandler(async (event) => {
-    const {productId, imageId}: IProductRemoveImage = getQuery(event)
+    const {imageId}: IProductRemoveImage = getQuery(event)
     const imageIdReal = _.toSafeInteger(imageId)
-    console.log(imageIdReal)
     const imageData = await prisma.image.findUnique({
         where: {
             id: imageIdReal
@@ -16,12 +15,12 @@ export default defineEventHandler(async (event) => {
     if (imageData) {
         const storageRoot = useRuntimeConfig().app.fileStorageRoot
         try {
+            await rm(path.join(storageRoot, imageData.location, imageData.name))
             const result = await prisma.image.delete({
                 where: {
                     id: imageIdReal
                 }
             })
-            await rm(path.join(storageRoot, imageData.location, imageData.name))
             if (result) {
                 return result
             }
@@ -31,21 +30,5 @@ export default defineEventHandler(async (event) => {
 
 
     }
-
-    // const result = await prisma.product.update({
-    //     where: {
-    //         id: productId
-    //     },
-    //     data: {
-    //         images: {
-    //             deleteMany: {
-    //                 id: imageId
-    //             }
-    //         }
-    //     },
-    //     select: {
-    //         id: true
-    //     }
-    // })
     setResponseStatus(event, 400)
 })
