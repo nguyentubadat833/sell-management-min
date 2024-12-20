@@ -9,7 +9,7 @@ const urls = ref([''])
 const toast = useToast()
 const isLoading = ref(false)
 const {handleFileInput, files} = useFileStorage()
-const {data: images, refresh} = useFetch('/api/client/banner')
+const {data: images, refresh} = useFetch('/api/control/banner')
 
 async function upload() {
   isLoading.value = true

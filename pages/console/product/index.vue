@@ -162,6 +162,9 @@ async function removeImage(imageId: number) {
     </div>
     <UTable :rows="filteredProductRows" :columns="productCols" @select="selectProduct" :sort="sort"
             class="max-h-[70vh]">
+      <template #originalPrice-data="{row}">
+        <span>{{Intl.NumberFormat('vi-VN').format(row.originalPrice)}}</span>
+      </template>
       <template #status-data="{row}">
         <span>{{ getStatusLabel(row.status) }}</span>
       </template>
