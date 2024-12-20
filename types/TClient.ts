@@ -8,3 +8,23 @@ export interface IBannerImages {
     location: string
     link?: string | null
 }
+
+export interface ILocalStorageCartHistory {
+    products?: string[]
+}
+
+export interface ICartDataReq {
+    productCodeList: string[]
+}
+
+export interface ICartDataRes {
+    products?: {
+        code: string,
+        name: string
+        originalPrice: number | null,
+        images: {
+            name: string
+            location: string
+        }[]
+    }[]
+}

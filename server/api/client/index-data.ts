@@ -17,13 +17,17 @@ export default defineEventHandler(async () => {
         where: {
             status: 1
         },
-        include: {
-            category: {
-                select: {
-                    id: true,
-                    name: true,
-                }
-            },
+        select: {
+            code: true,
+            name: true,
+            originalPrice: true,
+            createdAt: true,
+            // category: {
+            //     select: {
+            //         id: true,
+            //         name: true,
+            //     }
+            // },
             images: {
                 select: {
                     id: true,

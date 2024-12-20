@@ -10,7 +10,15 @@ const {data: indexData} = await useFetch('/api/client/index-data')
 //   }
 //   return []
 // })
+
+const toast = useToast()
 const carouselRef = ref()
+
+function addProductToCart(productCode: string) {
+  cartInfo().addProduct(productCode)
+  countCartProducts.value = cartInfo().countProducts()
+  toast.add({title: 'Đã thêm vào giỏ hàng', timeout: 1000})
+}
 
 onMounted(() => {
   setInterval(() => {
@@ -52,7 +60,7 @@ onMounted(() => {
           <div class="flex flex-col gap-3">
             <div class="flex justify-between">
               <div class="sm:text-lg font-bold text-orange-700 tracking-wider">
-                <span>{{ Intl.NumberFormat('vi-VN').format(product?.originalPrice) }}</span>
+                <span>{{ formatNumber(product?.originalPrice)}}</span>
                 <span class="text-sm sm:text-base"> vnđ</span>
               </div>
               <div class="flex items-center gap-1 text-gray-600 dark:text-white">
@@ -60,8 +68,8 @@ onMounted(() => {
                 <span>16</span>
               </div>
             </div>
-            <UButton icon="heroicons:shopping-cart" color="orange" block>
-              <span>Mua ngay</span>
+            <UButton @click="addProductToCart(product?.code)" icon="heroicons:shopping-cart" color="orange" block>
+              <span>Thêm vào giỏ</span>
             </UButton>
           </div>
         </div>
