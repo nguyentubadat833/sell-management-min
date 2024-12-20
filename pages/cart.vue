@@ -104,7 +104,7 @@ onBeforeMount(async () => {
             <span class="text-gray-600 dark:text-white font-semibold">Tổng thanh toán: {{ sumPrice }}</span>
             <span></span>
           </div>
-          <UButton icon="heroicons:currency-dollar-20-solid" label="Thanh toán" color="orange"/>
+          <UButton label="Tiến hành mua hàng" color="orange"/>
         </div>
       </template>
     </UCard>

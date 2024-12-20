@@ -13,11 +13,17 @@ const {data: indexData} = await useFetch('/api/client/index-data')
 
 const toast = useToast()
 const carouselRef = ref()
+const productInCart = ref<string[]>([])
 
 function addProductToCart(productCode: string) {
-  cartInfo().addProduct(productCode)
-  countCartProducts.value = cartInfo().countProducts()
-  toast.add({title: 'Đã thêm vào giỏ hàng', timeout: 1000})
+  productInCart.value = cartInfo().getProducts()
+  if (productInCart.value.includes(productCode)){
+    toast.add({title: 'Đã có trong giỏ hàng', color: 'blue', timeout: 2000})
+  }else {
+    cartInfo().addProduct(productCode)
+    countCartProducts.value = cartInfo().countProducts()
+    toast.add({title: 'Đã thêm vào giỏ hàng', timeout: 1000})
+  }
 }
 
 onMounted(() => {
@@ -31,6 +37,7 @@ onMounted(() => {
     carouselRef.value.next()
   }, 3000)
 })
+
 
 </script>
 
@@ -60,7 +67,7 @@ onMounted(() => {
           <div class="flex flex-col gap-3">
             <div class="flex justify-between">
               <div class="sm:text-lg font-bold text-orange-700 tracking-wider">
-                <span>{{ formatNumber(product?.originalPrice)}}</span>
+                <span>{{ formatNumber(product?.originalPrice) }}</span>
                 <span class="text-sm sm:text-base"> vnđ</span>
               </div>
               <div class="flex items-center gap-1 text-gray-600 dark:text-white">
@@ -68,9 +75,9 @@ onMounted(() => {
                 <span>16</span>
               </div>
             </div>
-            <UButton @click="addProductToCart(product?.code)" icon="heroicons:shopping-cart" color="orange" block>
-              <span>Thêm vào giỏ</span>
-            </UButton>
+            <UButton @click="addProductToCart(product?.code)" label="Thêm vào giỏ"
+                     icon="heroicons:shopping-cart"
+                     color="orange" block/>
           </div>
         </div>
       </div>

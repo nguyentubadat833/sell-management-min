@@ -2,6 +2,7 @@ import {getServerSession} from '#auth'
 import {EUserType} from "~/types/TUser";
 
 const prefixRequiredAuth = [
+    '/user',
     '/console',
     '/api/control',
     '/api/file'

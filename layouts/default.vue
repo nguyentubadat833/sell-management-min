@@ -69,7 +69,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="absolute bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen w-full py-10">
+  <div class="bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen py-10">
     <header class="fixed w-full space-y-4 z-50">
       <nav
           class="md:w-[23rem] w-[17rem] h-[3rem] p-2 mx-auto flex justify-between transition-all duration-500 ease-in-out
@@ -83,10 +83,12 @@ onBeforeMount(() => {
         <UButton icon="heroicons:magnifying-glass-20-solid" color="gray" variant="ghost" class="rounded-lg"/>
         <UButton icon="heroicons:shopping-cart-16-solid" color="gray" variant="ghost" class="relative rounded-lg"
                  @click="navigateTo('/cart')">
-            <span
-                class="right-0 top-0 absolute px-1 border-white rounded-full bg-red-500 opacity-90 text-white text-xs">{{
-                countCartProducts
-              }}</span>
+            <ClientOnly>
+              <span
+                  class="right-0 top-0 absolute px-1 border-white rounded-full bg-red-500 opacity-90 text-white text-xs">{{
+                  countCartProducts
+                }}</span>
+            </ClientOnly>
         </UButton>
         <ChangeColorMode/>
         <UAvatar id="user-button" v-if="authData && authData?.user" size="sm" class="cursor-pointer"
