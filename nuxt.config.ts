@@ -82,6 +82,8 @@ export default defineNuxtConfig({
         },
     },
     app: {
+        pageTransition: {name: 'page', mode: 'out-in',},
+        layoutTransition: {name: 'layout', mode: 'out-in'},
         head: {
             link: [{
                 // href: 'https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css',
