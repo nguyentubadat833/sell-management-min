@@ -29,7 +29,8 @@ export default defineNuxtConfig({
       '@sidebase/nuxt-auth',
       'nuxt-file-storage',
       '@nuxt/image',
-      '@nuxt/content'
+      '@nuxt/content',
+      '@nuxtjs/device'
     ],
     auth: {
         provider: {
