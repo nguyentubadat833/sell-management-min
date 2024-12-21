@@ -1,5 +1,4 @@
 import prisma from "~/lib/prisma.ts";
-import slug from "slug";
 
 export default defineNitroPlugin(async (nitroApp) => {
     const isUseWareHouse = useRuntimeConfig().app.isUseWarehouse

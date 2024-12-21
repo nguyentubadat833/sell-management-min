@@ -1,6 +1,15 @@
 export interface IIndexData {
     banner?: IBannerImages[]
-    products: any[]
+    products: {
+        code: string,
+        name: string,
+        originalPrice: number | null,
+        createdAt: any
+        images: {
+            name: string,
+            location: string
+        }[]
+    }[]
 }
 
 export interface IBannerImages {

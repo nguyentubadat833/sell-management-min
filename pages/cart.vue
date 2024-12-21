@@ -4,14 +4,12 @@ import type {ICartDataReq, ICartDataRes} from "~/types/TClient";
 
 const toast = useToast()
 const cartData = ref<ICartDataRes>()
+const selectedProducts = ref<{ code: string, originalPrice: number }[]>([])
 const sumPrice = computed(() => {
-  if (cartData.value && cartData.value?.products) {
-    const arrayPrice = cartData.value?.products.map(product => {
-      return product?.originalPrice
-    })
-    return formatNumber(useSum(arrayPrice))
-  }
-  return `0 vnđ`
+  const arrayPrice = selectedProducts.value.map(product => {
+    return product?.originalPrice
+  })
+  return formatNumber(useSum(arrayPrice))
 })
 
 async function getProducts() {
@@ -59,6 +57,17 @@ onBeforeMount(async () => {
   await getProducts()
 })
 
+function changeCheckBox(value: any, product: any) {
+  if (value === true) {
+    selectedProducts.value.push({
+      code: product.code,
+      originalPrice: product.originalPrice
+    })
+  } else {
+    selectedProducts.value.splice(selectedProducts.value.findIndex(e => e.code == product.code), 1)
+  }
+}
+
 </script>
 
 <template>
@@ -71,29 +80,33 @@ onBeforeMount(async () => {
         </div>
       </template>
       <template #default>
-        <div class="min-h-[50vh]">
-          <div>
-            <div v-for="(product, index) in cartData?.products">
-              <div class="flex justify-between gap-2">
-                <div>
-                  <div class="flex gap-2">
-                    <NuxtImg :src="getImageProductUrl(product)"
-                             class="border dark:border-gray-600 border-1 w-32 overflow-hidden"/>
-                    <span class="md:text-base text-sm text-gray-700 dark:text-white font-medium max-w-96">{{
-                        product.name
-                      }}</span>
+        <div class="min-h-[50vh] max-h-[60vh] overflow-hidden overflow-y-auto">
+          <div v-for="(product, index) in cartData?.products">
+            <div class="flex justify-between items-center">
+              <label class="flex items-center sm:h-32 h-16 w-8">
+                <UCheckbox @change="changeCheckBox($event, product)"/>
+              </label>
+              <div class="flex gap-2 w-full">
+                <div
+                    class="sm:h-32 sm:w-32 h-16 w-16 flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
+                  <NuxtImg :src="getImageProductUrl(product)"
+                           class="h-full w-auto object-cover"/>
+                </div>
+                <div class="flex flex-col justify-between w-full">
+                      <span class="md:text-base text-xs text-gray-700 dark:text-white font-medium">{{
+                          product.name
+                        }}</span>
+                  <div class="flex items-end justify-between mr-2">
+                        <span class="text-orange-600 font-bold tracking-wider">{{
+                            formatNumber(product?.originalPrice)
+                          }}</span>
+                    <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.code)"
+                             variant="ghost"/>
                   </div>
                 </div>
-                <div class="flex flex-col items-end justify-between">
-                  <span class="text-orange-600 font-bold tracking-wider">{{
-                      formatNumber(product?.originalPrice)
-                    }}</span>
-                  <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.code)" label="Xóa"/>
-                </div>
-
               </div>
-              <UDivider v-if="index < cartData?.products?.length - 1" class="my-4"/>
             </div>
+            <UDivider v-if="index < cartData?.products?.length - 1" class="my-4"/>
           </div>
         </div>
       </template>
