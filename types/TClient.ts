@@ -15,6 +15,10 @@ export interface ISearchProductWithCategoryAlias {
 }
 
 export interface IProductSearch {
+    category: {
+        name: string,
+        alias: string
+    }
     code: string,
     name: string,
     originalPrice: number | null,

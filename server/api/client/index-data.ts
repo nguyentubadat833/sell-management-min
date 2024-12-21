@@ -22,12 +22,12 @@ export default defineEventHandler(async (): Promise<IIndexData> => {
             name: true,
             originalPrice: true,
             createdAt: true,
-            // category: {
-            //     select: {
-            //         id: true,
-            //         name: true,
-            //     }
-            // },
+            category: {
+                select: {
+                    alias: true,
+                    name: true,
+                }
+            },
             images: {
                 select: {
                     // id: true,

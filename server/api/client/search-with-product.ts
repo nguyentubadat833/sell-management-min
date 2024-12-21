@@ -9,6 +9,12 @@ export default defineEventHandler(async (event): Promise<IProductSearch | null> 
             alias: productAlias as string,
         },
         select: {
+            category: {
+                select: {
+                    name: true,
+                    alias: true
+                }
+            },
             code: true,
             name: true,
             originalPrice: true,

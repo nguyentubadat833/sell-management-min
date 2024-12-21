@@ -37,7 +37,7 @@ function addProductToCart(productCode: string) {
              :src="joinPath('/images', product?.images[0]?.location, product?.images[0]?.name)" alt="Images"
              class="w-full h-auto border-b dark:border-b-gray-700  cursor-pointer">
         <div class="flex flex-col justify-between p-3 sm:px-4 h-36">
-          <span class="text-gray-700 dark:text-white text-sm line-clamp-2 tracking-wide hover:underline cursor-pointer">{{
+          <span class="text-xs sm:text-base text-gray-700 dark:text-white line-clamp-2 tracking-wide hover:underline cursor-pointer">{{
               product.name
             }}
           </span>
