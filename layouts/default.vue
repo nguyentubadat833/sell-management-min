@@ -60,7 +60,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen py-10">
+  <div class="bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen py-10 tracking-wider">
     <header class="fixed w-full space-y-4 z-50">
       <nav
           class="md:w-[23rem] w-[17rem] h-[3rem] p-2 mx-auto flex justify-between transition-all duration-500 ease-in-out

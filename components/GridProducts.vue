@@ -43,7 +43,7 @@ function addProductToCart(productCode: string) {
           </span>
           <div class="flex flex-col gap-3">
             <div class="flex justify-between">
-              <div class="font-bold text-orange-700 tracking-wider">
+              <div class="font-bold text-orange-700">
                 <span>{{ formatNumber(product?.originalPrice) }}</span>
               </div>
               <div class="flex items-center gap-1 text-gray-600 dark:text-white">
@@ -52,7 +52,7 @@ function addProductToCart(productCode: string) {
               </div>
             </div>
             <UButton @click="addProductToCart(product.code)" label="Thêm vào giỏ"
-                     icon="heroicons:shopping-cart"
+                     icon="heroicons:plus-20-solid"
                      color="orange" block/>
           </div>
         </div>

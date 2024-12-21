@@ -3,6 +3,11 @@ export interface IIndexData {
     products: IProductSearch[]
 }
 
+export interface IImageInfo {
+    name: string,
+    location: string
+}
+
 export interface IBannerImages {
     name: string
     location: string
@@ -15,18 +20,12 @@ export interface ISearchProductWithCategoryAlias {
 }
 
 export interface IProductSearch {
-    category: {
-        name: string,
-        alias: string
-    }
+    category: ICategoryInfo
     code: string,
     name: string,
     originalPrice: number | null,
     createdAt: any
-    images: {
-        name: string,
-        location: string
-    }[]
+    images: IImageInfo[]
 }
 
 export interface IProductSearchAndSuggestion {
@@ -47,31 +46,22 @@ export interface ICartDataRes {
         code: string,
         name: string
         originalPrice: number | null,
-        images: {
-            name: string
-            location: string
-        }[]
+        images: IImageInfo[]
     }[]
 }
 
-export interface IClientCategory {
+export interface ICategoryInfo {
     // code: string
     name: string
     alias: string
 }
 
 export interface IClientSearchData {
-    categories: IClientCategory[]
+    categories: ICategoryInfo[]
     products: {
         name: string
         alias: string
-        category: {
-            name: string
-            alias: string
-        },
-        images: {
-            name: string,
-            location: string
-        }[]
+        category: ICategoryInfo,
+        images: IImageInfo[]
     }[]
 }

@@ -43,12 +43,20 @@ export default defineEventHandler(async (event): Promise<IProductSearchAndSugges
             where: {
                 category: {
                     alias: res.product?.category.alias
+                },
+                code: {
+                    notIn: [res.product?.code]
                 }
             },
         })
         if (res.suggestion.length < 10) {
             const target = 10 - res.suggestion.length
             const targetResult = await prisma.product.findMany({
+                where: {
+                    code: {
+                        notIn: [res.product?.code, ...res.suggestion.slice(0).map(e => e.code)]
+                    }
+                },
                 orderBy: [
                     {
                         createdAt: 'desc'
