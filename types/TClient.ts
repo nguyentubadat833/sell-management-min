@@ -29,6 +29,11 @@ export interface IProductSearch {
     }[]
 }
 
+export interface IProductSearchAndSuggestion {
+    product?: IProductSearch
+    suggestion: IProductSearch[]
+}
+
 export interface ILocalStorageCartHistory {
     products?: string[]
 }

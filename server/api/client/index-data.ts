@@ -3,6 +3,7 @@ import {IIndexData} from "~/types/TClient";
 
 export default defineEventHandler(async (): Promise<IIndexData> => {
     const indexData: IIndexData = {products: []}
+    
     indexData.banner = await prisma.image.findMany({
         where: {
             location: '/banner'

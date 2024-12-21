@@ -10,7 +10,7 @@ const categoriesActions = computed(() => searchData.value?.categories?.map(categ
     id: category.alias,
     label: category.name,
     click: () => {
-      navigateTo(`/${category.alias}`)
+      navigateTo(`/search/ctg/${category.alias}`)
       emit('searchComplete')
     }
   }
@@ -24,7 +24,7 @@ const productsActions = computed(() => searchData.value?.products?.map(product =
       loading: 'lazy'
     },
     click: () => {
-      navigateTo(`/${product.category.alias}/${product.alias}`)
+      navigateTo(`/search/prd/${product.alias}`)
       emit('searchComplete')
     }
   }
