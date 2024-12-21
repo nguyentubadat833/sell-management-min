@@ -21,6 +21,7 @@ export interface ISearchProductWithCategoryAlias {
 
 export interface IProductSearch {
     category: ICategoryInfo
+    alias: string
     code: string,
     name: string,
     originalPrice: number | null,

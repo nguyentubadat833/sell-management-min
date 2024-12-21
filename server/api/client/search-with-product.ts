@@ -8,6 +8,7 @@ const select = {
             alias: true
         }
     },
+    alias: true,
     code: true,
     name: true,
     originalPrice: true,

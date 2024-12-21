@@ -23,8 +23,8 @@ console.log(data.value)
       <template #header>
         <div class="flex justify-between">
           <div class="flex items-center gap-3">
-            <Icon name="heroicons:rectangle-group-20-solid" size="25" class="text-stone-800"/>
-            <span class="font-bold text-stone-800 text-lg sm:text-xl">{{ data?.product.name }}</span>
+            <Icon name="heroicons:rectangle-group-20-solid" size="25" class="text-stone-800 dark:text-white"/>
+            <span class="font-bold text-stone-800 dark:text-white text-lg sm:text-xl">{{ data?.product.name }}</span>
           </div>
           <span class="text-gray-400 italic">code: {{data?.product.code}}</span>
         </div>
