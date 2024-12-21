@@ -93,7 +93,8 @@ function changeCheckBox(value: any, product: any) {
                            class="h-full w-auto object-cover"/>
                 </div>
                 <div class="flex flex-col justify-between w-full">
-                      <span class="md:text-base text-xs text-gray-700 dark:text-white font-medium">{{
+                      <span @click="navigateTo(`/search/prd/${product.alias}`)"
+                          class="md:text-base text-xs text-gray-700 dark:text-white font-medium cursor-pointer hover:underline">{{
                           product.name
                         }}</span>
                   <div class="flex items-end justify-between mr-2">

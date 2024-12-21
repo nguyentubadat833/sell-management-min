@@ -44,6 +44,7 @@ export interface ICartDataReq {
 
 export interface ICartDataRes {
     products?: {
+        alias: string,
         code: string,
         name: string
         originalPrice: number | null,

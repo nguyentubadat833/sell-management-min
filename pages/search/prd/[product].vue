@@ -59,7 +59,7 @@ console.log(data.value)
                 </div>
               </div>
               <div>
-                <UCard>
+                <UCard class="shadow-md">
                   <div class="md:flex justify-between space-y-5 md:space-y-0">
                     <div class="flex items-center justify-center md:justify-start gap-2">
                       <Icon name="heroicons:arrow-down-circle-20-solid" size="25" class="text-orange-600"/>

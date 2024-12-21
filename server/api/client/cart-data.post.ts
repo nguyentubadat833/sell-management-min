@@ -11,6 +11,7 @@ export default defineEventHandler(async (event): Promise<ICartDataRes> => {
             }
         },
         select: {
+            alias: true,
             code: true,
             name: true,
             originalPrice: true,
