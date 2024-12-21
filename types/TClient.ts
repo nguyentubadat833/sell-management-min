@@ -1,21 +1,28 @@
 export interface IIndexData {
     banner?: IBannerImages[]
-    products: {
-        code: string,
-        name: string,
-        originalPrice: number | null,
-        createdAt: any
-        images: {
-            name: string,
-            location: string
-        }[]
-    }[]
+    products: IProductSearch[]
 }
 
 export interface IBannerImages {
     name: string
     location: string
     link?: string | null
+}
+
+export interface ISearchProductWithCategoryAlias {
+    categoryName: string
+    products: IProductSearch[]
+}
+
+export interface IProductSearch {
+    code: string,
+    name: string,
+    originalPrice: number | null,
+    createdAt: any
+    images: {
+        name: string,
+        location: string
+    }[]
 }
 
 export interface ILocalStorageCartHistory {

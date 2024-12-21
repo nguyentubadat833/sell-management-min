@@ -10,7 +10,7 @@ const categoriesActions = computed(() => searchData.value?.categories?.map(categ
     id: category.alias,
     label: category.name,
     click: () => {
-      navigateTo(`/${category.alias}/full`)
+      navigateTo(`/${category.alias}`)
       emit('searchComplete')
     }
   }
