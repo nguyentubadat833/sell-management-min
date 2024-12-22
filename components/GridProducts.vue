@@ -11,21 +11,6 @@ const {products, dividerLabel} = defineProps({
     required: true
   }
 })
-
-const toast = useToast()
-const productInCart = ref<string[]>([])
-
-function addProductToCart(productCode: string) {
-  productInCart.value = cartInfo().getProducts()
-  if (productInCart.value.includes(productCode)) {
-    toast.add({title: 'Đã có trong giỏ hàng', color: 'blue', timeout: 2000})
-  } else {
-    cartInfo().addProduct(productCode)
-    countCartProducts.value = cartInfo().countProducts()
-    toast.add({title: 'Đã thêm vào giỏ hàng', timeout: 1000})
-  }
-}
-
 </script>
 
 <template>
@@ -51,7 +36,7 @@ function addProductToCart(productCode: string) {
                 <span>16</span>
               </div>
             </div>
-            <UButton @click="addProductToCart(product.code)" label="Thêm vào giỏ"
+            <UButton @click="cartInfo().addProduct(product.code)" label="Thêm vào giỏ"
                      icon="heroicons:plus-20-solid"
                      color="orange" block/>
           </div>
