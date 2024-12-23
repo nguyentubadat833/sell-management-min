@@ -1,7 +1,8 @@
 <script setup lang="ts">
-
 import type {ICartDataReq, ICartDataRes} from "~/types/TClient";
+import type {IOrderReq} from "~/types/TOrder";
 
+const {data: authData} = useAuth()
 const toast = useToast()
 const cartData = ref<ICartDataRes>()
 const selectedProducts = ref<{ code: string, originalPrice: number }[]>([])
@@ -68,6 +69,24 @@ function changeCheckBox(value: any, product: any) {
   }
 }
 
+async function order() {
+  const response = await $fetch('/api/client/order/save', {
+    method: 'PUT',
+    body: {
+      shippingAddress: authData.value?.user?.email,
+      shippingMethod: 'Nhận qua email',
+      currency: 'vnd',
+      details: cartData.value?.products?.map(e => {
+        return {
+          productId: e.id,
+          quantity: 1
+        }
+      })
+    } as IOrderReq
+  })
+  console.log(response)
+}
+
 </script>
 
 <template>
@@ -94,7 +113,7 @@ function changeCheckBox(value: any, product: any) {
                 </div>
                 <div class="flex flex-col justify-between w-full">
                       <span @click="navigateTo(`/search/prd/${product.alias}`)"
-                          class="md:text-base text-xs text-gray-700 dark:text-white font-medium cursor-pointer hover:underline">{{
+                            class="md:text-base text-xs text-gray-700 dark:text-white font-medium cursor-pointer hover:underline">{{
                           product.name
                         }}</span>
                   <div class="flex items-end justify-between mr-2">
@@ -117,7 +136,7 @@ function changeCheckBox(value: any, product: any) {
             <span class="text-gray-600 dark:text-white font-semibold">Tổng thanh toán: {{ sumPrice }}</span>
             <span></span>
           </div>
-          <UButton label="Tiến hành mua hàng" color="orange"/>
+          <UButton label="Tiến hành mua hàng" color="orange" @click="order"/>
         </div>
       </template>
     </UCard>

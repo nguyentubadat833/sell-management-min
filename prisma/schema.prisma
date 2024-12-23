@@ -50,29 +50,28 @@ model Product {
   categoryId       String
   name             String
   alias            String  @unique
-  originalPrice    Float?
+  originalPrice    Float
   promotionDetails String?
   status           Int     @default(0)
 
   createdBy String
   createdAt DateTime @default(now())
 
-  images   Image[]
-  stocks   Stock[]
-  category Category @relation(fields: [categoryId], references: [id])
+  images       Image[]
+  stocks       Stock[]
+  orderDetails OrderDetail[]
+  category     Category      @relation(fields: [categoryId], references: [id])
 }
 
 model Order {
   id              String    @id @default(uuid())
   customerId      String
-  totalAmount     Float?
-  shippingAddress String?
+  totalAmount     Float
+  shippingAddress String
   shippingMethod  String
   currency        String
-  status          Int       @default(0)
+  status          Int       @default(1)
   orderAt         DateTime  @default(now())
-  createdBy       Int
-  createdAt       DateTime  @default(now())
   udpatedAt       DateTime?
 
   details OrderDetail[]
@@ -82,13 +81,15 @@ model Order {
 }
 
 model OrderDetail {
-  id        BigInt  @id @default(autoincrement())
-  orderId   String?
-  productId Int
+  id        BigInt @id @default(autoincrement())
+  orderId   String
+  productId String
   quantity  Int
   price     Float
+  status    Int    @default(1)
 
-  order Order? @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
 }
 
 model Payment {

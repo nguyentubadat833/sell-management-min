@@ -1,4 +1,5 @@
 import type {ILocalStorageCartHistory} from "~/types/TClient";
+import type {IOrderReq} from "~/types/TOrder";
 
 export const countCartProducts = ref(0)
 
