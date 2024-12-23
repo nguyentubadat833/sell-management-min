@@ -88,9 +88,9 @@ function changeCheckBox(value: any, product: any) {
               </label>
               <div class="flex gap-2 w-full">
                 <div
-                    class="sm:h-32 sm:w-32 h-16 w-16 flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
+                    class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
                   <NuxtImg :src="getImageProductUrl(product)"
-                           class="h-full w-auto object-cover"/>
+                           class="w-full object-cover"/>
                 </div>
                 <div class="flex flex-col justify-between w-full">
                       <span @click="navigateTo(`/search/prd/${product.alias}`)"

@@ -18,11 +18,11 @@ const {products, dividerLabel} = defineProps({
     <UDivider v-if="dividerLabel" :label="dividerLabel"/>
     <div class="grid md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 grid-cols-2 gap-4 md:gap-7">
       <div v-for="product in products" class="border dark:border-gray-700 rounded-lg overflow-hidden">
-        <div class="max-h-40  overflow-hidden flex items-center justify-between">
+        <div class="aspect-[4/3] overflow-hidden flex items-center justify-between">
           <img @click="navigateTo(`/search/prd/${product.alias}`)"
                v-if="product?.images && isArray(product?.images) && product.images.length > 0"
                :src="joinPath('/images', product?.images[0]?.location, product?.images[0]?.name)" alt="Images"
-               class="border-b dark:border-b-gray-700 min-w-full min-h-40 cursor-pointer">
+               class="border-b dark:border-b-gray-700 w-full cursor-pointer">
         </div>
         <div class="flex flex-col justify-between p-3 sm:px-4 h-36">
           <span @click="navigateTo(`/search/prd/${product.alias}`)"
