@@ -1,13 +1,30 @@
-export interface IProductReq {
-    id?: number
+export interface IConsoleProductReq {
+    id?: string
     name: string
-    categoryId: number,
+    categoryId: string,
     originalPrice?: number
     status?: number
-    images?: number[]
+    images?: string[]
+}
+
+export interface IConsoleProductRes {
+    id: string
+    name: string
+    originalPrice: number | null
+    status: number
+    createdAt: any
+    category: {
+        id: string
+        name: string
+    },
+    images: {
+        name: string
+        location: string
+    }[]
+
 }
 
 export interface IProductRemoveImage {
-    productId: number
-    imageId: number
+    productId: string
+    imageName: string
 }

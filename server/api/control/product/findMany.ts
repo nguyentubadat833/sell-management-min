@@ -1,10 +1,10 @@
 import prisma from "~/lib/prisma";
+import {IConsoleProductRes} from "~/types/TProduct";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (): Promise<IConsoleProductRes[]> => {
     return prisma.product.findMany({
         select: {
             id: true,
-            code: true,
             name: true,
             originalPrice: true,
             status: true,
@@ -17,7 +17,6 @@ export default defineEventHandler(async () => {
             },
             images: {
                 select: {
-                    id: true,
                     name: true,
                     location: true
                 }

@@ -1,7 +1,7 @@
 import {NuxtAuthHandler} from '#auth'
 import GoogleProvider from 'next-auth/providers/google'
 import prisma from "~/lib/prisma";
-import {Account} from "@prisma/client"
+import {Account, Prisma} from "@prisma/client"
 import {EAuthProvider, EUserType, IUserProfile} from "~/types/TUser";
 
 export default NuxtAuthHandler({
@@ -19,26 +19,26 @@ export default NuxtAuthHandler({
             if (user && user?.id) {
                 await prisma.account.upsert({
                     where: {
-                        provider_providerId: {
+                        provider_providerAccountId: {
                             provider: EAuthProvider.GOOGLE,
-                            providerId: user.id
+                            providerAccountId: user.id
                         }
                     },
                     create: {
                         provider: EAuthProvider.GOOGLE,
-                        providerId: user.id,
+                        providerAccountId: user.id,
                         email: user?.email,
-                        name: user?.name,
                         userType: EUserType.CUSTOMER as string,
-                        profile: JSON.stringify({
+                        profile: {
+                            name: user?.name,
                             avatar: user?.image
-                        } as IUserProfile)
+                        } as IUserProfile as Prisma.JsonObject
                     },
                     update: {
-                        name: user?.name,
-                        profile: JSON.stringify({
+                        profile: {
+                            name: user?.name,
                             avatar: user?.image
-                        } as IUserProfile)
+                        } as IUserProfile as Prisma.JsonObject
                     }
                 })
                 // console.log('user', user)
@@ -75,10 +75,12 @@ export default NuxtAuthHandler({
                         email: emailSession
                     }
                 });
-                response = {
-                    ...response,
-                    userId: userData?.id,
-                    userType: userData?.userType
+                if (userData) {
+                    response = {
+                        ...response,
+                        userId: userData.id,
+                        userType: userData.userType
+                    }
                 }
             }
             return response

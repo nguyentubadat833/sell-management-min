@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
-import type {IProductRemoveImage, IProductReq} from "~/types/TProduct";
-import {da} from "cronstrue/dist/i18n/locales/da";
+import type {IConsoleProductReq, IProductRemoveImage} from "~/types/TProduct";
 
 definePageMeta({
   name: 'Product Management'
@@ -26,12 +25,12 @@ const productCols = [
   {key: 'status', label: 'Status'}
 ]
 const initProductState = {
-  id: NaN,
+  id: '',
   name: '',
   category: {} as any,
   originalPrice: 0,
   status: NaN,
-  images: [] as { id: number, name: string, location: string }[],
+  images: [] as { name: string, location: string }[],
 }
 
 const {handleFileInput, files} = useFileStorage()
@@ -47,6 +46,7 @@ const {data: categoryData} = await useFetch('/api/control/category/findMany', {
     return input.filter(e => e.status === 1)
   }
 })
+console.log(categoryData.value)
 const filteredProductRows = computed(() => {
   if (isArray(productData.value)) {
     if (!q.value) {
@@ -80,7 +80,8 @@ function addProduct() {
 
 async function saveProduct() {
   if (!productState.name || !productState.category?.id) return
-  let images: number[] = []
+  let images: string[] = []
+  isLoading.value = true
   if (files.value.length > 0 || urls.value.length > 0) {
     const response = await $fetch('/api/file/product/upload', {
       method: 'POST',
@@ -102,37 +103,39 @@ async function saveProduct() {
       originalPrice: productState?.originalPrice,
       status: productState?.status,
       images: images
-    } as IProductReq
+    } as IConsoleProductReq
+  }).finally(() => {
+    isLoading.value = false
   })
 
   if (response) {
     await refreshProductData()
-    toast.add({title: 'Success'})
+    toast.add({title: 'Success', timeout: 1000})
     useAssign(productState, initProductState)
     urls.value = ['']
     isOpenProductModal.value = false
   } else {
     toast.add({title: 'Error', color: "red"})
   }
-  console.log(productState)
 }
 
 function selectProduct(data: any) {
   useAssign(productState, data)
+  console.log(productState)
   isOpenProductModal.value = true
 }
 
-async function removeImage(imageId: number) {
+async function removeImage(imageName: string) {
   async function del() {
     const result = await $fetch('/api/file/delete', {
       method: 'DELETE',
       params: {
         productId: productState.id,
-        imageId: imageId
+        imageName: imageName
       } as IProductRemoveImage
     })
     if (result) {
-      const index = productState.images.findIndex(e => e.id === imageId)
+      const index = productState.images.findIndex(e => e.name === imageName)
       productState.images.splice(index, 1)
       toast.add({title: 'Success'})
     } else {
@@ -163,7 +166,7 @@ async function removeImage(imageId: number) {
     <UTable :rows="filteredProductRows" :columns="productCols" @select="selectProduct" :sort="sort"
             class="max-h-[70vh]">
       <template #originalPrice-data="{row}">
-        <span>{{Intl.NumberFormat('vi-VN').format(row.originalPrice)}}</span>
+        <span>{{ Intl.NumberFormat('vi-VN').format(row.originalPrice) }}</span>
       </template>
       <template #status-data="{row}">
         <span>{{ getStatusLabel(row.status) }}</span>
@@ -173,12 +176,15 @@ async function removeImage(imageId: number) {
       </template>
     </UTable>
     <div class="flex justify-end">
-      <UButton label="Add Product" color="gray" @click="addProduct" :loading="isLoading"/>
+      <UButton label="Add Product" color="gray" @click="addProduct"/>
     </div>
     <ClientOnly>
       <UModal v-model="isOpenProductModal">
         <div class="p-4">
           <UForm :state="productState" class="space-y-5" @submit.prevent="saveProduct">
+            <UFormGroup label="Id">
+              <UInput disabled v-model="productState.id"/>
+            </UFormGroup>
             <UFormGroup label="Name" :error="!productState.name">
               <UInput v-model="productState.name" placeholder="Enter product name"/>
             </UFormGroup>
@@ -188,14 +194,14 @@ async function removeImage(imageId: number) {
                   :options="categoryData"
                   placeholder="Select a category"
                   searchable
-                  searchable-placeholder="Search by code or name"
+                  searchable-placeholder="Search by id or name"
                   option-attribute="name"
                   by="id"
-                  :search-attributes="['name', 'code']"
+                  :search-attributes="['name', 'id']"
               >
                 <template #option="{ option: category }">
                   <div class="flex gap-3">
-                    <span class="truncate w-24">{{ category.code }}</span>
+                    <span class="truncate w-24">{{ category.id }}</span>
                     <span class="truncate">{{ category.name }}</span>
                   </div>
                 </template>
@@ -222,7 +228,7 @@ async function removeImage(imageId: number) {
                     :key="image.name"
                     class="relative group">
                   <NuxtImg :src="joinPath('/images', image.location, image.name)" class="w-full h-auto object-cover"/>
-                  <Icon @click="removeImage(image.id)"
+                  <Icon @click="removeImage(image.name)"
                         class="absolute right-1 top-1 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         name="heroicons:x-circle"
                         size="30"
@@ -241,7 +247,7 @@ async function removeImage(imageId: number) {
 
             </UFormGroup>
             <div class="flex justify-end">
-              <UButton label="Submit" type="submit"/>
+              <UButton label="Submit" type="submit" :loading="isLoading"/>
             </div>
           </UForm>
         </div>

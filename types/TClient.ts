@@ -20,9 +20,9 @@ export interface ISearchProductWithCategoryAlias {
 }
 
 export interface IProductSearch {
+    id: string,
     category: ICategoryInfo
     alias: string
-    code: string,
     name: string,
     originalPrice: number | null,
     createdAt: any
@@ -39,13 +39,13 @@ export interface ILocalStorageCartHistory {
 }
 
 export interface ICartDataReq {
-    productCodeList: string[]
+    productIdList: string[]
 }
 
 export interface ICartDataRes {
     products?: {
+        id: string,
         alias: string,
-        code: string,
         name: string
         originalPrice: number | null,
         images: IImageInfo[]

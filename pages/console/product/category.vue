@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {ICategoryReq} from "~/types/TCategory";
+import type {IConsoleCategoryReq} from "~/types/TCategory";
 
 definePageMeta({
   name: 'Category Management'
@@ -22,20 +22,20 @@ const sort = ref({
 })
 
 const categoryColumns = [
-  {key: 'code', label: 'Code'},
+  {key: 'id', label: 'Id'},
   {key: 'name', label: 'Name'},
   {key: 'status', label: 'Status'},
   {key: 'createdAt', label: 'Created At', sortable: true}
 ]
-const initCategoryState: ICategoryReq = {
-  code: '',
+const initCategoryState: IConsoleCategoryReq = {
+  id: '',
   name: '',
   status: 1
 }
 
 const q = ref('')
 const isOpenCategoryModal = ref(false)
-const categoryState = reactive<ICategoryReq>({...initCategoryState})
+const categoryState = reactive<IConsoleCategoryReq>({...initCategoryState})
 const {data: categoryData, refresh: refreshCategoryData} = await useFetch('/api/control/category/findMany')
 const filteredRows = computed(() => {
   if (isArray(categoryData.value)) {
@@ -112,8 +112,8 @@ async function saveCategory() {
       <UModal v-model="isOpenCategoryModal">
         <div class="p-4">
           <UForm :state="categoryState" class="space-y-5" @submit.prevent="saveCategory">
-            <UFormGroup label="Code">
-              <UInput disabled v-model="categoryState.code"/>
+            <UFormGroup label="Id">
+              <UInput disabled v-model="categoryState.id"/>
             </UFormGroup>
             <UFormGroup label="Name" :error="!categoryState.name">
               <UInput v-model="categoryState.name" placeholder="Enter category name"/>

@@ -9,6 +9,7 @@ export enum EAuthProvider {
 }
 
 export interface IUserProfile {
+    name?: string
     avatar?: string
 }
 

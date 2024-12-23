@@ -1,7 +1,10 @@
 <script setup lang="ts">
 
+import Developer from "~/components/Developer.vue";
+
 const {data: authData, signOut} = useAuth()
 
+const isOpenDevModal = ref(false)
 const isShowUserMenu = ref(false)
 const isOpenSearch = ref(false)
 const userNavItems: {
@@ -119,6 +122,18 @@ onBeforeMount(() => {
         <ClientSearch @searchComplete="searchComplete"/>
       </UModal>
     </ClientOnly>
+    <DevOnly>
+      <div class="absolute top-1 right-1">
+        <UButton label="Developer" @click="isOpenDevModal = true"/>
+        <ClientOnly>
+          <UModal v-model="isOpenDevModal">
+            <UCard>
+              <Developer/>
+            </UCard>
+          </UModal>
+        </ClientOnly>
+      </div>
+    </DevOnly>
   </div>
 </template>
 

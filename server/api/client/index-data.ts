@@ -19,8 +19,8 @@ export default defineEventHandler(async (): Promise<IIndexData> => {
             status: 1
         },
         select: {
+            id: true,
             alias: true,
-            code: true,
             name: true,
             originalPrice: true,
             createdAt: true,

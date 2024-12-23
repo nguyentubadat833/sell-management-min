@@ -6,9 +6,9 @@ import fs from "fs";
 import https from "https";
 import prisma from "~/lib/prisma";
 
-export default async function (event: H3Event<EventHandlerRequest>, location: string): Promise<number[]> {
+export default async function (event: H3Event<EventHandlerRequest>, location: string): Promise<string[]> {
     const {files, urls} = await readBody(event)
-    const result: number[] = []
+    const result: string[] = []
     if (_.isArray(urls)) {
         const root = useRuntimeConfig().app.fileStorageRoot
         const imagePromises = urls.map((url) => {
@@ -34,8 +34,8 @@ export default async function (event: H3Event<EventHandlerRequest>, location: st
                                 }
                             });
                             console.log('Saved the image to database: ', newImage.name);
-                            result.push(newImage.id);
-                            resolve(newImage.id);
+                            result.push(newImage.name);
+                            resolve(newImage.name);
                         } catch (error) {
                             console.log('An error occurred while saving the image to the database')
                             unlinkImage(filePath)
@@ -67,7 +67,7 @@ export default async function (event: H3Event<EventHandlerRequest>, location: st
             }
         })
         console.log('Uploaded: ', newImage.name)
-        result.push(newImage.id)
+        result.push(newImage.name)
     }
     return result
 }

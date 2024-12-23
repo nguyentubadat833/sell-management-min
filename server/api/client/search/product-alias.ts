@@ -8,8 +8,8 @@ const select = {
             alias: true
         }
     },
+    id: true,
     alias: true,
-    code: true,
     name: true,
     originalPrice: true,
     createdAt: true,
@@ -45,8 +45,8 @@ export default defineEventHandler(async (event): Promise<IProductSearchAndSugges
                 category: {
                     alias: res.product?.category.alias
                 },
-                code: {
-                    notIn: [res.product?.code]
+                id: {
+                    notIn: [res.product?.id]
                 }
             },
         })
@@ -54,8 +54,8 @@ export default defineEventHandler(async (event): Promise<IProductSearchAndSugges
             const target = 10 - res.suggestion.length
             const targetResult = await prisma.product.findMany({
                 where: {
-                    code: {
-                        notIn: [res.product?.code, ...res.suggestion.slice(0).map(e => e.code)]
+                    id: {
+                        notIn: [res.product?.id, ...res.suggestion.slice(0).map(e => e.id)]
                     }
                 },
                 orderBy: [

@@ -6,20 +6,20 @@ export function cartInfo() {
     const lsKey = 'sell-cart-history'
     const toast = useToast()
 
-    function addProduct(productCode: string) {
+    function addProduct(productId: string) {
         let currentData: ILocalStorageCartHistory = {}
-        if (productCode && productCode.length > 0) {
+        if (productId && productId.length > 0) {
             const oldData = getLSCartHistory()
             if (oldData && isArray(oldData?.products)) {
-                if (oldData.products.includes(productCode)) {
+                if (oldData.products.includes(productId)) {
                     toast.add({title: 'Đã có trong giỏ hàng', color: 'blue', timeout: 2000})
                     return
                 } else {
-                    oldData.products.push(productCode)
+                    oldData.products.push(productId)
                     currentData.products = oldData.products
                 }
             } else {
-                currentData.products = [productCode]
+                currentData.products = [productId]
             }
             localStorage.setItem(lsKey, JSON.stringify(currentData))
             countCartProducts.value = cartInfo().countProducts()
@@ -66,11 +66,16 @@ export function cartInfo() {
         }
     }
 
+    function clearData() {
+        localStorage.removeItem(lsKey)
+    }
+
     return {
         countProducts,
         addProduct,
         getProducts,
         getLSCartHistory,
-        removeProduct
+        removeProduct,
+        clearData
     }
 }

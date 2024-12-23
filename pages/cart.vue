@@ -13,10 +13,10 @@ const sumPrice = computed(() => {
 })
 
 async function getProducts() {
-  cartData.value = await $fetch('/api/client/cart-data', {
+  cartData.value = await $fetch('/api/client/cart/load', {
     method: 'POST',
     body: {
-      productCodeList: cartInfo().getProducts()
+      productIdList: cartInfo().getProducts()
     } as ICartDataReq
   })
 }
@@ -101,7 +101,7 @@ function changeCheckBox(value: any, product: any) {
                         <span class="text-orange-600 font-bold tracking-wider">{{
                             formatNumber(product?.originalPrice)
                           }}</span>
-                    <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.code)"
+                    <UButton icon="heroicons:x-circle" color="red" @click="removeProduct(product.id)"
                              variant="ghost"/>
                   </div>
                 </div>

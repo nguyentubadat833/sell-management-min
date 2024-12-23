@@ -3,7 +3,7 @@ import type {IProductSearchAndSuggestion} from "~/types/TClient";
 
 const route = useRoute()
 const {product} = route.params
-const {data} = await useFetch('/api/client/search-with-product', {
+const {data} = await useFetch('/api/client/search/product-alias', {
   params: {
     product: product
   },

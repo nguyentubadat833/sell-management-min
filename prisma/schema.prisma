@@ -6,70 +6,65 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("NUXT_DATABASE_URL")
 }
 
 model Image {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
+  name      String   @id
   link      String?
   location  String
   uploadAt  DateTime @default(now())
-  uploadBy  Int
-  productId Int?
+  uploadBy  String
+  productId String?
 
-  Product Product? @relation(fields: [productId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
 }
 
 model Account {
-  id         Int      @id @default(autoincrement())
-  provider   String
-  providerId String
-  email      String?
-  name       String?
-  profile    String?
-  userType   String
-  registerAt DateTime @default(now())
-  Order      Order[]
+  id                String   @id @default(cuid())
+  provider          String
+  providerAccountId String
+  email             String?
+  profile           Json?
+  userType          String
+  registerAt        DateTime @default(now())
+  orders            Order[]
 
-  @@unique([provider, providerId])
+  @@unique([provider, providerAccountId])
 }
 
 model Category {
-  id     Int    @id @default(autoincrement())
-  code   String @unique
+  id     String @id
   name   String
-  P      String @unique
+  alias  String @unique
   status Int    @default(1)
 
-  createdBy Int
+  createdBy String
   createdAt DateTime  @default(now())
-  Product   Product[]
+  products  Product[]
 }
 
 model Product {
-  id               Int     @id @default(autoincrement())
-  code             String  @default(cuid())
-  categoryId       Int
+  id               String  @id
+  categoryId       String
   name             String
   alias            String  @unique
   originalPrice    Float?
   promotionDetails String?
   status           Int     @default(0)
 
-  createdBy Int
+  createdBy String
   createdAt DateTime @default(now())
 
   images   Image[]
-  stock    Stock[]
+  stocks   Stock[]
   category Category @relation(fields: [categoryId], references: [id])
 }
 
 model Order {
-  id              BigInt    @id @default(autoincrement())
-  orderCode       String    @default(uuid())
-  customerId      Int
+  id              String    @id @default(uuid())
+  customerId      String
   totalAmount     Float?
   shippingAddress String?
   shippingMethod  String
@@ -88,17 +83,17 @@ model Order {
 
 model OrderDetail {
   id        BigInt  @id @default(autoincrement())
-  orderId   BigInt?
+  orderId   String?
   productId Int
   quantity  Int
   price     Float
 
-  Order Order? @relation(fields: [orderId], references: [id])
+  order Order? @relation(fields: [orderId], references: [id])
 }
 
 model Payment {
-  id            BigInt    @id @default(autoincrement())
-  orderId       BigInt    @unique
+  id            String    @id @default(uuid())
+  orderId       String    @unique
   transactionId String
   amount        Float
   currency      String
@@ -113,9 +108,9 @@ model Warehouse {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  createdBy Int
+  createdBy String
   createdAt DateTime @default(now())
-  Stock     Stock[]
+  stocks    Stock[]
 }
 
 model Stock {
@@ -126,11 +121,11 @@ model Stock {
   condition   String
 
   warehouseId Int
-  productId   Int
+  productId   String
 
-  createdBy Int
+  createdBy String
   createdAt DateTime @default(now())
 
   wharehouse Warehouse? @relation(fields: [warehouseId], references: [id])
-  Product    Product    @relation(fields: [productId], references: [id])
+  product    Product    @relation(fields: [productId], references: [id])
 }
