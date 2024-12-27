@@ -19,7 +19,10 @@ export default defineEventHandler(async (event) => {
             },
             data: {
                 name: body.name,
-                status: toSafeInteger(body?.status)
+                status: toSafeInteger(body?.status),
+                type: body.type,
+                parentId: body.parentId,
+                childrenIds: body.childrenIds
             },
             select: select
         })
@@ -31,6 +34,9 @@ export default defineEventHandler(async (event) => {
                     charset: 'alphabetic'
                 }).toUpperCase(),
                 name: body.name,
+                type: body.type,
+                parentId: body.parentId,
+                childrenIds: body.childrenIds,
                 alias: slug(body.name),
                 createdBy: await getUserIdLogged(event),
                 status: toSafeInteger(body?.status) ?? 1

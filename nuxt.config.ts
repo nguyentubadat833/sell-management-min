@@ -23,16 +23,20 @@ export default defineNuxtConfig({
         }
     },
     modules: [
-      "@prisma/nuxt",
-      '@nuxt/ui',
-      "nuxt-lodash",
-      'nuxt-time',
-      '@sidebase/nuxt-auth',
-      'nuxt-file-storage',
-      '@nuxt/image',
-      '@nuxt/content',
-      '@nuxtjs/device'
+        "@prisma/nuxt",
+        '@nuxt/ui',
+        "nuxt-lodash",
+        'nuxt-time',
+        '@sidebase/nuxt-auth',
+        'nuxt-file-storage',
+        '@nuxt/image',
+        '@nuxt/content',
+        '@nuxtjs/device',
+        'nuxt-paypal'
     ],
+    paypal: {
+        clientId: 'AekPE1obxYWN4XbykdUaAOnC3imQBfKw-5z8iXwwNhxo3iURtz27voWVNWdLroHkmg5gKl8P3Nfnzzpl',
+    },
     auth: {
         provider: {
             type: 'authjs',

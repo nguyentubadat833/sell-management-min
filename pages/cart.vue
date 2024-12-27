@@ -84,7 +84,9 @@ async function order() {
       })
     } as IOrderReq
   })
-  console.log(response)
+  if (response){
+    navigateTo(`/payment?orderId=${response.id}`)
+  }
 }
 
 </script>

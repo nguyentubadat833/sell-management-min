@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type {IConsoleCategoryReq} from "~/types/TCategory";
+import {ECategoryType, type IConsoleCategoryReq} from "~/types/TCategory";
 
 definePageMeta({
   name: 'Category Management'
 })
 
-const categoryOptions: {
+const categoryStatusOptions: {
   label: string,
   value: number
 }[] = [
@@ -23,6 +23,7 @@ const sort = ref({
 
 const categoryColumns = [
   {key: 'id', label: 'Id'},
+  {key: 'type', label: 'Type'},
   {key: 'name', label: 'Name'},
   {key: 'status', label: 'Status'},
   {key: 'createdAt', label: 'Created At', sortable: true}
@@ -30,7 +31,8 @@ const categoryColumns = [
 const initCategoryState: IConsoleCategoryReq = {
   id: '',
   name: '',
-  status: 1
+  status: 1,
+  type: ECategoryType.THREE_D
 }
 
 const q = ref('')
@@ -54,7 +56,7 @@ const filteredRows = computed(() => {
 })
 
 function getStatusLabel(status: number) {
-  const find = categoryOptions.find(e => e.value === status)
+  const find = categoryStatusOptions.find(e => e.value === status)
   if (find) {
     return find.label
   } else {
@@ -118,8 +120,31 @@ async function saveCategory() {
             <UFormGroup label="Name" :error="!categoryState.name">
               <UInput v-model="categoryState.name" placeholder="Enter category name"/>
             </UFormGroup>
+            <UFormGroup label="Type">
+              <USelect v-model="categoryState.type" :options="Object.values(ECategoryType)"
+                       placeholder="Select a type"/>
+            </UFormGroup>
+            <UFormGroup label="Parent">
+              <USelectMenu
+                  v-model="categoryState.parentId"
+                  :options="categoryData"
+                  placeholder="Select a category"
+                  searchable
+                  searchable-placeholder="Search by id or name"
+                  option-attribute="name"
+                  by="id"
+                  :search-attributes="['id', 'name']"
+              >
+                <template #option="{ option: category }">
+                  <div class="flex gap-2">
+                    <span class="w-24">{{ category.id }}</span>
+                    <span>{{ category.name }}</span>
+                  </div>
+                </template>
+              </USelectMenu>
+            </UFormGroup>
             <UFormGroup label="Status">
-              <USelect v-model="categoryState.status" :options="categoryOptions" option-attribute="label"
+              <USelect v-model="categoryState.status" :options="categoryStatusOptions" option-attribute="label"
                        value-attribute="value"/>
             </UFormGroup>
             <div class="flex justify-end">

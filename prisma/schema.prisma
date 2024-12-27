@@ -35,10 +35,13 @@ model Account {
 }
 
 model Category {
-  id     String @id
-  name   String
-  alias  String @unique
-  status Int    @default(1)
+  id          String  @id
+  name        String
+  alias       String  @unique
+  status      Int     @default(1)
+  type        String
+  parentId    String?
+  childrenIds Json?
 
   createdBy String
   createdAt DateTime  @default(now())
