@@ -1,8 +1,8 @@
-import {IOrderDetailReq, IOrderReq} from "~/types/TOrder";
+import {IOrderDetailReq, IOrderReq, IOrderRes} from "~/types/TOrder";
 import prisma from "~/lib/prisma";
 import _ from "lodash";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<IOrderRes | undefined> => {
     const req: IOrderReq = await readBody(event)
     const userId = await getUserIdLogged(event)
     if (!req?.id) {

@@ -1,10 +1,13 @@
 import type {ILocalStorageCartHistory} from "~/types/TClient";
-import type {IOrderReq} from "~/types/TOrder";
+import type {ISelectedOrderSession} from "~/types/TOrder";
 
+// export const orderProducts = ref<IOrderDetailReq[]>([])
 export const countCartProducts = ref(0)
+
 
 export function cartInfo() {
     const lsKey = 'sell-cart-history'
+    const ssKey = 'sell-cart-order'
     const toast = useToast()
 
     function addProduct(productId: string) {
@@ -71,12 +74,37 @@ export function cartInfo() {
         localStorage.removeItem(lsKey)
     }
 
+    function selectedOrderSS() {
+        function save(input: ISelectedOrderSession) {
+            sessionStorage.setItem(ssKey, JSON.stringify(input))
+        }
+
+        function get(): ISelectedOrderSession | null {
+            const data = sessionStorage.getItem(ssKey)
+            if (data) {
+                try {
+                    return JSON.parse(data)
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+            return null
+        }
+
+        return {
+            save,
+            get
+        }
+    }
+
     return {
         countProducts,
         addProduct,
         getProducts,
         getLSCartHistory,
         removeProduct,
-        clearData
+        clearData,
+
+        selectedOrderSS
     }
 }

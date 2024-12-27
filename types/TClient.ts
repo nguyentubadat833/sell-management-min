@@ -43,13 +43,17 @@ export interface ICartDataReq {
 }
 
 export interface ICartDataRes {
-    products?: {
-        id: string,
-        alias: string,
-        name: string
-        originalPrice: number | null,
-        images: IImageInfo[]
-    }[]
+    products?: IProductCart[]
+}
+
+export interface IProductCart {
+    id: string,
+    alias: string,
+    name: string
+    originalPrice: number | null,
+    images: IImageInfo[]
+    orderQuantity?: number
+    selectedOrder?: boolean
 }
 
 export interface ICategoryInfo {

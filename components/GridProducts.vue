@@ -87,7 +87,7 @@ const {products, dividerLabel} = defineProps({
         </div>
         <div class="space-y-2">
           <span @click="navigateTo(`/search/prd/${product.alias}`)"
-                class="text-xs sm:text-base text-gray-700 dark:text-white line-clamp-1 tracking-wide hover:underline cursor-pointer">{{
+                class="font-medium text-xs sm:text-base text-gray-700 dark:text-white line-clamp-1 tracking-wide cursor-pointer">{{
               product.name
             }}
           </span>
@@ -97,7 +97,7 @@ const {products, dividerLabel} = defineProps({
                 <span>{{ formatNumber(product?.originalPrice) }}</span>
               </div>
               <div class="flex items-center gap-1 text-gray-600 dark:text-white">
-                <Icon name="heroicons:shopping-bag" size="18"/>
+                <Icon name="ic:baseline-remove-red-eye" size="18"/>
                 <span>16</span>
               </div>
             </div>
