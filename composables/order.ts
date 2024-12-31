@@ -61,12 +61,21 @@ export function cartInfo() {
         }
     }
 
-    function removeProduct(productCode: string) {
+    function removeProduct(productId: string) {
         const oldData = getLSCartHistory()
         if (oldData && oldData?.products && oldData.products.length > 0) {
-            const findIndex = oldData.products.findIndex(e => e === productCode)
+            const findIndex = oldData.products.findIndex(e => e === productId)
             oldData.products.splice(findIndex, 1)
             localStorage.setItem(lsKey, JSON.stringify(oldData))
+        }
+    }
+
+    function removeProducts(productsIds: string[]) {
+        const oldData = getLSCartHistory()
+        if (oldData && oldData?.products && oldData.products.length > 0) {
+            oldData.products = oldData.products.filter(oldProduct => !productsIds.includes(oldProduct))
+            localStorage.setItem(lsKey, JSON.stringify(oldData))
+            countCartProducts.value = cartInfo().countProducts()
         }
     }
 
@@ -103,6 +112,7 @@ export function cartInfo() {
         getProducts,
         getLSCartHistory,
         removeProduct,
+        removeProducts,
         clearData,
 
         selectedOrderSS

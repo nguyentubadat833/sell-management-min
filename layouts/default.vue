@@ -15,14 +15,14 @@ const userNavItems: {
 }[] = [
   {
     label: 'Profile',
-    icon: 'mdi:account-circle',
+    // icon: 'mdi:account-circle',
     click: () => {
       navigateTo('/user/profile')
     }
   },
   {
     label: 'Shopping history',
-    icon: 'mdi:history',
+    // icon: 'mdi:history',
     click: () => {
       navigateTo('/user/history')
     }
@@ -33,7 +33,7 @@ const userNavItems: {
   },
   {
     label: 'Sign Out',
-    icon: 'mdi:logout',
+    // icon: 'mdi:logout',
     click: () => {
       signOut()
     }

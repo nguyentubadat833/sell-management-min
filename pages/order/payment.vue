@@ -4,6 +4,7 @@ import type {IProductCart} from "~/types/TClient";
 
 const {data: authData} = useAuth()
 
+const isPaymentPaypal = ref(false)
 const isPayment = ref(false)
 const isLoading = ref(false)
 const totalAmount = ref()
@@ -35,8 +36,8 @@ onBeforeMount(() => {
 
 async function toPayment() {
   isLoading.value = true
-  const response = await $fetch('/api/client/order/save', {
-    method: 'PUT',
+  const response = await $fetch('/api/client/order/create', {
+    method: 'POST',
     body: orderState
   }).finally(() => {
     isLoading.value = false
@@ -46,6 +47,47 @@ async function toPayment() {
     // navigateTo(`/order/payment?orderId=${response.id}`)
     orderData.value = response
     isPayment.value = true
+    cartInfo().removeProducts(orderState.details.map(e => e.productId))
+  }
+}
+
+function paymentPaypal() {
+  console.log(orderData.value!.totalAmount.toString())
+  isPaymentPaypal.value = true
+  if (orderData.value && orderData.value?.id) {
+    usePaypalButton({
+      style: {
+        label: 'paypal',
+        color: 'blue'
+      },
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [
+            {
+              amount: {
+                // value: orderData.value!.totalAmount.toString(),
+                // currency_code: orderData.value?.currency,
+                value: '100.00',
+                currency_code: 'USD',
+              },
+              description: orderData.value?.id
+            }
+          ],
+        });
+      },
+      onApprove: async (data, actions) => {
+        try {
+          const details = await actions.order?.capture();
+          console.log('Payment completed successfully:', details);
+        } catch (error) {
+          console.error('Error capturing payment:', error);
+        }
+      },
+
+      onError: (err) => {
+        console.error("Error during transaction:", err);
+      },
+    })
   }
 }
 
@@ -64,9 +106,9 @@ async function toPayment() {
               <UInput disabled :model-value="authData?.user?.name"/>
             </UFormGroup>
             <UFormGroup label="Địa chỉ giao hàng">
-              <UTextarea disabled v-model="orderState.shippingAddress"/>
+              <UTextarea v-model="orderState.shippingAddress"/>
             </UFormGroup>
-            <UFormGroup label="Tiền tệ thanh toán">
+            <UFormGroup label="Đơn vị tiền tệ">
               <UInput disabled v-model="orderState.currency"/>
             </UFormGroup>
             <UFormGroup label="Sản phẩm đặt mua">
@@ -101,7 +143,7 @@ async function toPayment() {
               </div>
             </UFormGroup>
             <div class="flex justify-between items-center">
-              <span>Tổng thanh toán: </span>
+              <span class="font-medium">Tổng thanh toán: </span>
               <span class="text-orange-600 font-bold text-lg">{{ totalAmount }}</span>
             </div>
           </UForm>
@@ -112,7 +154,27 @@ async function toPayment() {
       </UCard>
       <UCard v-if="isPayment" class="md:w-[50rem] mx-auto">
         <template #header>
-          <span class="font-bold text-lg">Thanh toán đơn hàng: {{ orderData?.id }}</span>
+          <div class="font-bold text-lg">Thanh toán</div>
+          <div class="mt-2 font-medium text-gray-700">
+            <span>Mã đơn: </span>
+            <span>{{ orderData?.id }}</span>
+          </div>
+        </template>
+        <template #default>
+          <div class="flex justify-center">
+            <div class="payment-group flex items-center gap-5">
+              <div class="payment-group-wrapper-img" @click="paymentPaypal">
+                <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
+              </div>
+              <div class="payment-group-wrapper-img">
+                <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
+              </div>
+            </div>
+          </div>
+          <div v-show="isPaymentPaypal" class="p-3 mt-3 bg-white">
+            <div id="paypal-checkout">
+            </div>
+          </div>
         </template>
       </UCard>
     </ClientOnly>
@@ -120,5 +182,13 @@ async function toPayment() {
 </template>
 
 <style scoped>
+.payment-group {
+  .payment-group-wrapper-img {
+    @apply rounded-lg border-2 h-24 flex items-center p-5 dark:border-gray-700 cursor-pointer;
 
+    .payment-group-img {
+      @apply w-32
+    }
+  }
+}
 </style>
