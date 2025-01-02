@@ -8,9 +8,11 @@ export default defineEventHandler(async (event): Promise<IOrderHistoryReq[]> => 
     if (session && session.user && 'userId' in session) {
         return prisma.order.findMany({
             where: {
-                customerId: session.userId as string
+                customerId: session.userId as string,
+                status: 1
             },
             select: {
+                id: true,
                 totalAmount: true,
                 shippingAddress: true,
                 currency: true,
@@ -40,5 +42,5 @@ export default defineEventHandler(async (event): Promise<IOrderHistoryReq[]> => 
             }
         })
     }
-    return  []
+    return []
 })

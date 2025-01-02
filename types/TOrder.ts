@@ -15,9 +15,9 @@ export interface IOrderDetailReq {
 }
 
 export interface IOrderRes {
-    id: string,
-    currency: string,
-    customerId: string,
+    id: string
+    currency: string
+    customerId: string
     totalAmount: number
 }
 
@@ -27,6 +27,7 @@ export interface ISelectedOrderSession {
 }
 
 export interface IOrderHistoryReq {
+    id: string
     totalAmount: number
     shippingAddress: string
     currency: string

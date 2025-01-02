@@ -14,17 +14,17 @@ const userNavItems: {
   split?: boolean
 }[] = [
   {
-    label: 'Profile',
+    label: 'Hồ sơ cá nhân',
     // icon: 'mdi:account-circle',
     click: () => {
       navigateTo('/user/profile')
     }
   },
   {
-    label: 'Shopping history',
+    label: 'Lịch sử đơn hàng',
     // icon: 'mdi:history',
     click: () => {
-      navigateTo('/user/history')
+      navigateTo('/order/history')
     }
   },
   {
@@ -32,7 +32,7 @@ const userNavItems: {
     split: true
   },
   {
-    label: 'Sign Out',
+    label: 'Đăng xuất',
     // icon: 'mdi:logout',
     click: () => {
       signOut()
@@ -76,7 +76,7 @@ onBeforeMount(() => {
         <UButton icon="heroicons:magnifying-glass-20-solid" color="gray" variant="ghost" class="rounded-lg"
                  @click="isOpenSearch = !isOpenSearch"/>
         <UButton icon="heroicons:shopping-cart-16-solid" color="gray" variant="ghost" class="relative rounded-lg"
-                 @click="navigateTo('/order/cart')">
+                 @click="navigateTo('/cart')">
           <ClientOnly>
                       <span
                           class="right-0 top-0 absolute px-1 border-white rounded-full bg-red-500 opacity-90 text-white text-xs">{{

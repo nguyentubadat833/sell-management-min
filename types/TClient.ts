@@ -71,3 +71,8 @@ export interface IClientSearchData {
         images: IImageInfo[]
     }[]
 }
+
+export interface IOrderRes {
+    totalAmount: number
+    currency: string
+}

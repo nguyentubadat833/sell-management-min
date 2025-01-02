@@ -62,7 +62,7 @@ function removeProduct(code: string) {
   }
 }
 
-async function toBuy() {
+async function toOrder() {
   if (!authData.value || !authData.value?.user) {
     navigateTo('/auth/signIn')
   } else {
@@ -72,7 +72,7 @@ async function toBuy() {
         products: productsBuy,
         totalPrice: useSum(arrayPrice.value)
       })
-      await navigateTo('/order/payment')
+      await navigateTo('/order')
     } else {
       isErrorMessage.value = true
     }
@@ -125,7 +125,7 @@ onBeforeMount(async () => {
       <template #default>
         <div class="min-h-[50vh] max-h-[60vh] overflow-hidden overflow-y-auto">
           <div v-for="(product, index) in cartData?.products">
-            <div class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-slate-800 md:py-4 py-2 group">
+            <div class="flex justify-between items-center rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 md:py-4 py-2 group">
               <label class="flex items-center pl-2 sm:h-32 h-16 w-8">
                 <UCheckbox v-model="product.selectedOrder" @change="changeCheckBox($event, product, index)"/>
               </label>
@@ -175,7 +175,7 @@ onBeforeMount(async () => {
             <span class="text-gray-600 dark:text-white font-semibold">Tổng thanh toán: {{ formatTotalPrice }}</span>
             <span></span>
           </div>
-          <UButton icon="heroicons:shopping-cart-16-solid" label="Mua hàng" color="orange" @click="toBuy"/>
+          <UButton icon="heroicons:shopping-cart-16-solid" label="Mua hàng" color="orange" @click="toOrder"/>
         </div>
       </template>
     </UCard>

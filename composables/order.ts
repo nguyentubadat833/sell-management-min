@@ -100,7 +100,12 @@ export function cartInfo() {
             return null
         }
 
+        function clear() {
+            sessionStorage.removeItem(ssKey)
+        }
+
         return {
+            clear,
             save,
             get
         }
