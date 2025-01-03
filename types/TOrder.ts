@@ -49,3 +49,7 @@ export interface IOrderHistoryReq {
         status: number
     } | null
 }
+
+export type TOrderExchangeRate = {
+    USD: number
+}

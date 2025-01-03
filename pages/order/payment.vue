@@ -1,111 +1,103 @@
 <script setup lang="ts">
 
 import type {IOrderRes} from "~/types/TClient";
-
-const {data: authData} = useAuth()
+import type {TOrderExchangeRate} from "~/types/TOrder";
 
 const orderIdReq = computed(() => useRoute().query?.orderId)
 const isPaymentPaypal = ref(false)
-// const isPayment = ref(false)
-const isLoading = ref(false)
-// const totalAmount = ref()
-// const productsCart = ref<IProductCart[]>([])
+const isPaypalInitialized = ref(false)
+const isPayment = ref(false)
+const isNotFound = ref(false)
 const orderData = ref<IOrderRes>()
-// const orderState = reactive<IOrderReq>({
-//   shippingAddress: authData.value?.user?.email as string,
-//   shippingMethod: 'Email',
-//   currency: 'VND',
-//   details: []
-// })
-//
-// onBeforeMount(() => {
-//   const ssData = cartInfo().selectedOrderSS().get()
-//   productsCart.value = ssData?.products ?? []
-//   if (productsCart.value.length > 0 && ssData?.totalPrice) {
-//     totalAmount.value = formatNumber(ssData.totalPrice)
-//     orderState.details = productsCart.value.slice(0).map(e => {
-//       return {
-//         productId: e.id,
-//         quantity: e!.orderQuantity as number
-//       }
-//     })
-//   }
-//   if (orderState.details.length === 0) {
-//     navigateTo('/order/cart')
-//   }
-// })
 
-// async function toPayment() {
-//   isLoading.value = true
-//   const response = await $fetch('/api/client/order/create', {
-//     method: 'POST',
-//     body: orderState
-//   }).finally(() => {
-//     isLoading.value = false
-//   })
-//   if (response) {
-//     console.log(response)
-//     // navigateTo(`/order/payment?orderId=${response.id}`)
-//     orderData.value = response
-//     isPayment.value = true
-//     cartInfo().removeProducts(orderState.details.map(e => e.productId))
-//     cartInfo().selectedOrderSS().clear()
-//   }
-// }
+async function getOrderData() {
+  orderData.value = await $fetch(`/api/client/order/get`, {
+    params: {
+      id: orderIdReq.value
+    }
+  })
+}
+
+onBeforeMount(async () => {
+  const isPaid = await $fetch('/api/client/order/isPaid', {
+    params: {
+      orderId: orderIdReq.value
+    }
+  }).catch(err => {
+    if (err?.status === 404) {
+      isNotFound.value = true
+    }
+  })
+  if (isPaid === false) {
+    isPayment.value = true
+  }
+})
 
 async function paymentPaypal() {
-  // console.log(orderData.value!.totalAmount.toString())]
-  orderData.value = await $fetch(`/api/client/order/${orderIdReq.value}`)
-  isPaymentPaypal.value = true
+  if (isPaypalInitialized.value) {
+    return
+  }
+  await getOrderData()
   if (orderData.value) {
-    await usePaypalButton({
-      style: {
-        label: 'paypal',
-        color: 'blue'
-      },
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [
-            {
-              amount: {
-                // value: orderData.value!.totalAmount.toString(),
-                // currency_code: orderData.value?.currency,
-                value: '100.00',
-                currency_code: 'USD',
-              },
-              description: JSON.stringify({orderId: orderIdReq.value})
-            }
-          ],
-        });
-      },
-      onApprove: async (data, actions) => {
-        try {
-          const details = await actions.order?.capture();
-          console.log('Payment completed successfully:', details);
-        } catch (error) {
-          console.error('Error capturing payment:', error);
-        }
-      },
+    isPaymentPaypal.value = true
+    const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
+      params: {
+        orderId: orderIdReq.value
+      }
+    })
+    if (orderExChange) {
+      isPaypalInitialized.value = true
+      const exchangeRate = orderExChange.exchangeRate as TOrderExchangeRate
+      await usePaypalButton({
+        style: {
+          label: 'paypal',
+          color: 'blue'
+        },
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: {
+                  value: `${exchangeRate.USD}`,
+                  currency_code: `USD`,
+                },
+                description: JSON.stringify({orderId: orderIdReq.value})
+              }
+            ],
+          });
+        },
+        onApprove: async (data, actions) => {
+          try {
+            const paypalRes = await actions.order?.capture();
+            await $fetch('/api/client/payment/paypal', {
+              method: 'POST',
+              body: paypalRes
+            })
+          } catch (error) {
+            console.error('Error capturing payment:', error);
+          }
+        },
 
-      onError: (err) => {
-        console.error("Error during transaction:", err);
-      },
-    })
-  } else {
-    useToast().add({
-      title: 'Không thể thanh toán',
-      color: "red",
-      description: 'Đơn hàng này không tồn tại',
-      actions: [
-        {
-          label: 'Về giỏ hàng',
-          click: () => navigateTo('/cart')
-        }, {
-          label: 'Xem các đơn hàng',
-          click: () => navigateTo('/order/history')
-        }
-      ]
-    })
+        onError: (err) => {
+          console.error("Error during transaction:", err);
+        },
+      })
+    } else {
+      useToast().add({
+        title: 'Không thể thanh toán',
+        color: "red",
+        description: 'Đơn hàng này không tồn tại',
+        actions: [
+          {
+            label: 'Về giỏ hàng',
+            click: () => navigateTo('/cart')
+          }, {
+            label: 'Xem các đơn hàng',
+            click: () => navigateTo('/order/history')
+          }
+        ]
+      })
+    }
   }
 }
 
@@ -114,92 +106,48 @@ async function paymentPaypal() {
 <template>
   <div class="space-y-6">
     <ClientOnly>
-      <!--      <UCard class="md:w-[50rem] mx-auto">-->
-      <!--        <template #header>-->
-      <!--          <span class="font-bold text-lg">Thông tin đơn hàng</span>-->
-      <!--        </template>-->
-      <!--        <template #default>-->
-      <!--          <UForm :state="orderState" class="space-y-5">-->
-      <!--            <UFormGroup label="Người mua">-->
-      <!--              <UInput disabled :model-value="authData?.user?.name"/>-->
-      <!--            </UFormGroup>-->
-      <!--            <UFormGroup label="Địa chỉ giao hàng">-->
-      <!--              <UTextarea v-model="orderState.shippingAddress"/>-->
-      <!--            </UFormGroup>-->
-      <!--            <UFormGroup label="Đơn vị tiền tệ">-->
-      <!--              <UInput disabled v-model="orderState.currency"/>-->
-      <!--            </UFormGroup>-->
-      <!--            <UFormGroup label="Sản phẩm đặt mua">-->
-      <!--              <div v-for="(product, index) in productsCart">-->
-      <!--                <div-->
-      <!--                    class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-slate-800 md:py-4 py-2 group">-->
-      <!--                  <div class="flex gap-3 w-full">-->
-      <!--                    <div-->
-      <!--                        class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">-->
-      <!--                      <NuxtImg :src="getProductImageUrl(product.images[0])"-->
-      <!--                               class="w-full object-cover"/>-->
-      <!--                    </div>-->
-      <!--                    <div class="flex flex-col justify-between w-full">-->
-      <!--                  <span @click="navigateTo(`/search/prd/${product.alias}`)"-->
-      <!--                        class="md:text-base text-xs text-gray-700 dark:text-white font-medium cursor-pointer hover:underline">{{-->
-      <!--                      product.name-->
-      <!--                    }}</span>-->
-      <!--                      <span class="text-orange-600 font-bold tracking-wider md:text-base text-xs">{{-->
-      <!--                          formatNumber(product?.originalPrice)-->
-      <!--                        }}</span>-->
-      <!--                      <div class="flex justify-between w-full">-->
-      <!--                        <div class="flex items-center gap-3">-->
-      <!--                          <label class="text-gray-600 font-bold md:text-base text-xs">Số lượng: {{-->
-      <!--                              product.orderQuantity-->
-      <!--                            }}</label>-->
-      <!--                        </div>-->
-      <!--                      </div>-->
-      <!--                    </div>-->
-      <!--                  </div>-->
-      <!--                </div>-->
-      <!--                <UDivider v-if="index < productsCart?.length - 1"/>-->
-      <!--              </div>-->
-      <!--            </UFormGroup>-->
-      <!--            <div class="flex justify-between items-center">-->
-      <!--              <span class="font-medium">Tổng thanh toán: </span>-->
-      <!--              <span class="text-orange-600 font-bold text-lg">{{ totalAmount }}</span>-->
-      <!--            </div>-->
-      <!--          </UForm>-->
-      <!--        </template>-->
-      <!--        <template #footer v-if="!isPayment">-->
-      <!--          <UButton label="Hoàn tất đơn hàng" block @click="toPayment" :loading="isLoading"/>-->
-      <!--        </template>-->
-      <!--      </UCard>-->
-      <UCard class="md:w-[50rem] mx-auto">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <Icon name="ic:outline-payments" size="25"/>
-            <div class="font-bold text-lg">Thanh toán</div>
-          </div>
-        </template>
-        <template #footer>
-          <div class="mt-2 font-medium text-sm italic text-gray-700">
-            <span>Đơn hàng: </span>
-            <span>{{ orderIdReq }}</span>
-          </div>
-        </template>
-        <template #default>
-          <div class="flex justify-center">
-            <div class="payment-group flex items-center gap-5">
-              <div class="payment-group-wrapper-img" @click="paymentPaypal">
-                <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
+      <div v-if="isNotFound" class="flex items-center gap-2">
+        <Icon name="heroicons:exclamation-triangle-16-solid" size="30" class="text-gray-600"/>
+        <span class="text-lg">Đơn hàng không tồn tại</span>
+      </div>
+      <div v-else>
+        <UCard class="md:w-[50rem] mx-auto">
+          <template #header>
+            <div class="flex items-center gap-2">
+              <Icon name="ic:outline-payments" size="25"/>
+              <div class="font-bold text-lg">Thanh toán</div>
+            </div>
+          </template>
+          <template #footer>
+            <div class="mt-2 font-medium text-sm italic text-gray-500">
+              <span>Đơn hàng: </span>
+              <span>{{ orderIdReq }}</span>
+            </div>
+          </template>
+          <template #default>
+            <div v-if="isPayment">
+              <div class="flex justify-center">
+                <div class="payment-group flex items-center gap-5">
+                  <div class="payment-group-wrapper-img" @click="paymentPaypal">
+                    <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
+                  </div>
+                  <div class="payment-group-wrapper-img">
+                    <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
+                  </div>
+                </div>
               </div>
-              <div class="payment-group-wrapper-img">
-                <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
+              <div v-show="isPaymentPaypal" class="p-3 mt-3 bg-white">
+                <div id="paypal-checkout">
+                </div>
               </div>
             </div>
-          </div>
-          <div v-show="isPaymentPaypal" class="p-3 mt-3 bg-white">
-            <div id="paypal-checkout">
+            <div v-else class="flex items-center gap-2">
+              <Icon name="mdi:checkbox-marked-circle-outline" size="50" class="text-green-600"/>
+              <span class="text-lg">Đơn hàng đã thanh toán</span>
             </div>
-          </div>
-        </template>
-      </UCard>
+          </template>
+        </UCard>
+      </div>
     </ClientOnly>
   </div>
 </template>

@@ -74,12 +74,21 @@ function toPayment(id: string) {
       <div class="space-y-6">
         <div v-for="(order) in group" class="group">
           <UCard>
+            <template #header v-if="order?.payment && order?.payment?.status === 1">
+              <div>
+                <UBadge variant="solid" label="Đã thanh toán"/>
+              </div>
+            </template>
             <template #default>
-              <div class="space-y-1">
-                <div class="flex md:justify-end items-center">
-                  <span class="font-medium text-gray-400 text-sm">Mã đơn: {{ order?.id }}</span>
-                </div>
-                <div class="ml-1 space-y-1">
+              <div class="space-y-1 relative">
+                <div class="ml-1 space-y-1 z-20">
+                  <div>
+                    <div class="flex items-center gap-1">
+                      <Icon name="ic:baseline-barcode" size="18"/>
+                      <span class="font-medium">Mã đơn: </span>
+                    </div>
+                    <span class="ml-6">{{ order?.id }}</span>
+                  </div>
                   <div>
                     <div class="flex items-center gap-1">
                       <Icon name="ic:baseline-mail-outline" size="18"/>

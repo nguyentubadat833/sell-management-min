@@ -84,9 +84,9 @@ console.log(data.value)
               <UButton @click="cartInfo().addProduct(data?.product!.id)" label="Thêm vào giỏ"
                        icon="heroicons:plus-20-solid"
                        color="orange" class="flex justify-center md:justify-start"/>
-              <UButton label="Mua ngay"
-                       icon="heroicons:shopping-cart"
-                       color="lime" class="flex justify-center md:justify-start"/>
+<!--              <UButton label="Mua ngay"-->
+<!--                       icon="heroicons:shopping-cart"-->
+<!--                       color="lime" class="flex justify-center md:justify-start"/>-->
             </div>
           </div>
         </UCard>

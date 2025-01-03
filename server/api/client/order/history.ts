@@ -11,6 +11,11 @@ export default defineEventHandler(async (event): Promise<IOrderHistoryReq[]> => 
                 customerId: session.userId as string,
                 status: 1
             },
+            orderBy: [
+                {
+                    orderAt: 'desc'
+                }
+            ],
             select: {
                 id: true,
                 totalAmount: true,

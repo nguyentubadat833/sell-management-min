@@ -70,6 +70,7 @@ model Order {
   id              String    @id @default(uuid())
   customerId      String
   totalAmount     Float
+  exchangeRate    Json?
   shippingAddress String
   shippingMethod  String
   currency        String
@@ -96,14 +97,16 @@ model OrderDetail {
 }
 
 model Payment {
-  id            String    @id @default(uuid())
-  orderId       String    @unique
-  transactionId String
-  amount        Float
-  currency      String
-  paymentMethod String
-  status        Int       @default(0)
-  paymentAt     DateTime?
+  id                String    @id @default(uuid())
+  orderId           String    @unique
+  transactionId     String
+  amount            Float
+  currency          String
+  paymentMethod     String
+  details           Json?
+  status            Int       @default(0)
+  paymentAt         DateTime?
+  paymentCompleteAt DateTime?
 
   order Order @relation(fields: [orderId], references: [id])
 }
