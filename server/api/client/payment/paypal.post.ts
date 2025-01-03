@@ -33,7 +33,10 @@ export default defineEventHandler(async (event) => {
         paymentDataInit.paymentAt = create_time
         paymentDataInit.paymentCompleteAt = update_time
         return prisma.payment.create({
-            data: paymentDataInit
+            data: paymentDataInit,
+            select: {
+                id: true
+            }
         });
     }
 })
@@ -58,7 +61,7 @@ async function setStatus(paypalStatus: string, paypalAmount: number, orderId: st
         } else {
             throw createError({
                 statusCode: 404,
-                message: 'Order not found'
+                statusMessage: 'Order not found'
             })
         }
     } else {

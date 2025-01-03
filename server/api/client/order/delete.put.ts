@@ -4,7 +4,6 @@ import _ from "lodash";
 
 export default defineEventHandler(async (event) => {
     const {id} = getQuery(event)
-    console.log(getQuery(event))
     if (_.isString(id)) {
         const data = await prisma.order.findUnique({
             where: {

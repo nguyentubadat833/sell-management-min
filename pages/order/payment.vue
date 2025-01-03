@@ -69,10 +69,13 @@ async function paymentPaypal() {
         onApprove: async (data, actions) => {
           try {
             const paypalRes = await actions.order?.capture();
-            await $fetch('/api/client/payment/paypal', {
+            const paymentRes = await $fetch('/api/client/payment/paypal', {
               method: 'POST',
               body: paypalRes
             })
+            if (paymentRes) {
+              isPayment.value = false
+            }
           } catch (error) {
             console.error('Error capturing payment:', error);
           }
@@ -143,7 +146,7 @@ async function paymentPaypal() {
             </div>
             <div v-else class="flex items-center gap-2">
               <Icon name="mdi:checkbox-marked-circle-outline" size="50" class="text-green-600"/>
-              <span class="text-lg">Đơn hàng đã thanh toán</span>
+              <span class="text-lg">Đã thanh toán</span>
             </div>
           </template>
         </UCard>

@@ -29,9 +29,6 @@ const items = [
     click: () => {
       navigateTo('/console/sell/order')
     }
-  }, {
-    label: 'Payment',
-    icon: 'heroicons:credit-card-solid'
   }], [{
     label: 'Inventory',
     icon: 'heroicons:square-3-stack-3d-solid',

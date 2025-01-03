@@ -34,13 +34,13 @@ export default defineEventHandler(async (event) => {
         } else {
             throw createError({
                 statusCode: 404,
-                message: 'Order not found'
+                statusMessage: 'Order not found'
             })
         }
     } else {
         throw createError({
             statusCode: 400,
-            message: 'Invalid order'
+            statusMessage: 'Invalid order'
         })
     }
 })

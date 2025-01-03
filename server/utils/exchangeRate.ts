@@ -7,7 +7,7 @@ export async function rateVNDTo() {
     } else {
         throw createError({
             statusCode: 404,
-            message: 'Không có dữ liệu tỷ giá hối đoái'
+            message: 'No exchange rate data available'
         })
     }
 }

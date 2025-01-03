@@ -6,7 +6,7 @@ definePageMeta({
 const columns = [
   {key: 'provider', label: 'Provider'},
   {key: 'email', label: 'Email'},
-  {key: 'name', label: 'Name'},
+  {key: 'profile.name', label: 'Name'},
   {key: 'userType', label: 'User Type'}
 ]
 
