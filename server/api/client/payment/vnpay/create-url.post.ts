@@ -1,11 +1,11 @@
 import moment from "moment";
 import * as querystring from "qs";
-import * as crypto from "crypto"
-import _ from "lodash";
 import prisma from "~/lib/prisma";
+import {IVnpayCreateUrlReq, type IVnpayDetails} from "~/types/IPayment";
+import {Prisma} from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
+    const body: IVnpayCreateUrlReq = await readBody(event)
     const ipAddr = event.headers.get('x-forwarded-for') ||
         event.context.connection.remoteAddress ||
         event.context.socket.remoteAddress ||
@@ -16,9 +16,12 @@ export default defineEventHandler(async (event) => {
 
     const date = new Date();
     const createDate = moment(date).format('YYYYMMDDHHmmss');
-    const bankCode = body?.bankCode;
+    const tnx = moment(date).format('DDHHmmss')
+
     const orderId = body.orderId
-    const orderInfo = body.orderInfo;
+    const bankCode = body?.bankCode;
+    const currCode = 'VND'
+    let locale = body?.language ?? 'vn'
 
     const orderDb = await prisma.order.findUnique({
         where: {
@@ -32,16 +35,19 @@ export default defineEventHandler(async (event) => {
         })
     }
 
+    const orderInfo = `Payment order: ${orderDb.id}`
+    const orderType = body?.orderType || 'other'
+    const orderAmount = orderDb.totalAmount * 100
     let vnp_Params: any = {};
     vnp_Params['vnp_Version'] = '2.1.0';
     vnp_Params['vnp_Command'] = 'pay';
     vnp_Params['vnp_TmnCode'] = tmnCode;
-    vnp_Params['vnp_Locale'] = 'vn';
-    vnp_Params['vnp_CurrCode'] = 'VND';
-    vnp_Params['vnp_TxnRef'] = moment(date).format('DDHHmmss');
+    vnp_Params['vnp_Locale'] = locale;
+    vnp_Params['vnp_CurrCode'] = currCode;
+    vnp_Params['vnp_TxnRef'] = tnx;
     vnp_Params['vnp_OrderInfo'] = orderInfo;
-    vnp_Params['vnp_OrderType'] = 'other';
-    vnp_Params['vnp_Amount'] = orderDb.totalAmount * 100;
+    vnp_Params['vnp_OrderType'] = orderType;
+    vnp_Params['vnp_Amount'] = orderAmount;
     vnp_Params['vnp_ReturnUrl'] = returnURL;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
@@ -51,11 +57,27 @@ export default defineEventHandler(async (event) => {
 
     vnp_Params = vnpayUtils().sortObject(vnp_Params);
 
-    // let signData = querystring.stringify(vnp_Params, {encode: false});
-    // let hmac = crypto.createHmac("sha512", secretKey);
-    // vnp_Params['vnp_SecureHash'] = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = generateSigned(vnp_Params)
     vnpPaymentUrl += '?' + querystring.stringify(vnp_Params, {encode: false});
+
+    await prisma.payment.create({
+        data: {
+            orderId: orderDb.id,
+            amount: orderDb.totalAmount,
+            currency: orderDb.currency,
+            paymentMethod: 'vnpay',
+            paymentAt: date,
+            details: {
+                ipAddr: ipAddr,
+                tnx: tnx,
+                orderInfo: orderInfo,
+                orderType: orderType,
+                amount: orderAmount,
+                currCode: currCode,
+                bankCode: bankCode ?? undefined
+            } as IVnpayDetails as unknown as Prisma.JsonObject
+        }
+    })
 
     return vnpPaymentUrl
 });

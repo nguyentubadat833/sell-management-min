@@ -6,10 +6,10 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     devServer: {
         port: Number(process.env.NUXT_APP_DEV_PORT) ?? 3000,
-        https: {
-            key: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.key')).toString(),
-            cert: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.crt')).toString(),
-        }
+        // https: {
+        //     key: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.key')).toString(),
+        //     cert: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.crt')).toString(),
+        // }
     },
     ssr: true,
     devtools: {enabled: true},

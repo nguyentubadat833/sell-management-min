@@ -2,6 +2,7 @@
 
 import type {IOrderRes} from "~/types/TClient";
 import type {TOrderExchangeRate} from "~/types/TOrder";
+import type {IVnpayCreateUrlReq} from "~/types/IPayment";
 
 const orderIdReq = computed(() => useRoute().query?.orderId)
 const isPaymentPaypal = ref(false)
@@ -105,14 +106,11 @@ async function paymentPaypal() {
 }
 
 async function paymentVNPAY() {
-  const data = new Date()
   const createUrl = await $fetch('/api/client/payment/vnpay/create-url', {
     method: 'POST',
     body: {
-      orderId: orderIdReq.value,
-      orderInfo: `Thanh toan GD: ${orderIdReq.value}`,
-      returnUrl: `/order/payment?orderId=${orderIdReq.value}`
-    }
+      orderId: orderIdReq.value
+    } as IVnpayCreateUrlReq
   })
   navigateTo(createUrl, {
     external: true

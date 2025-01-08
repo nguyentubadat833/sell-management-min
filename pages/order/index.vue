@@ -42,7 +42,7 @@ async function toPayment() {
   if (response) {
     cartInfo().removeProducts(orderState.details.map(e => e.productId))
     cartInfo().selectedOrderSS().clear()
-    navigateTo(`/order/payment?orderId=${response.id}`)
+    navigateTo(`/payment?orderId=${response.id}`)
   }
 }
 </script>

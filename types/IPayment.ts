@@ -15,3 +15,18 @@ export interface IPaypalReq {
     paymentAt: any
     paymentCompleteAt?: any
 }
+export interface IVnpayCreateUrlReq {
+    orderId: string,
+    bankCode?: string,
+    language?: 'vn' | 'en',
+    orderType?: string
+}
+export interface IVnpayDetails{
+    ipAddr: string,
+    tnx: string
+    orderInfo: string,
+    orderType: string
+    amount: number
+    currCode: string,
+    bankCode?: string
+}

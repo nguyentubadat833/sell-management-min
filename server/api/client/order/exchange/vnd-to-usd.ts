@@ -1,6 +1,5 @@
 import prisma from "~/lib/prisma";
 import _ from "lodash";
-import {rateVNDToUSD} from "~/server/utils/exchangeRate";
 import {TOrderExchangeRate} from "~/types/TOrder";
 
 export default defineEventHandler(async (event) => {

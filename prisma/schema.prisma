@@ -99,7 +99,7 @@ model OrderDetail {
 model Payment {
   id                String    @id @default(uuid())
   orderId           String    @unique
-  transactionId     String
+  transactionId     String?
   amount            Float
   currency          String
   paymentMethod     String
