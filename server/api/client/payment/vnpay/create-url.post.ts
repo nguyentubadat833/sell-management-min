@@ -60,9 +60,27 @@ export default defineEventHandler(async (event) => {
     vnp_Params['vnp_SecureHash'] = generateSigned(vnp_Params)
     vnpPaymentUrl += '?' + querystring.stringify(vnp_Params, {encode: false});
 
-    await prisma.payment.create({
-        data: {
+    await prisma.payment.upsert({
+        where: {
+            orderId: orderDb.id
+        },
+        create: {
             orderId: orderDb.id,
+            amount: orderDb.totalAmount,
+            currency: orderDb.currency,
+            paymentMethod: 'vnpay',
+            paymentAt: date,
+            details: {
+                ipAddr: ipAddr,
+                tnx: tnx,
+                orderInfo: orderInfo,
+                orderType: orderType,
+                amount: orderAmount,
+                currCode: currCode,
+                bankCode: bankCode ?? undefined
+            } as IVnpayDetails as unknown as Prisma.JsonObject
+        },
+        update: {
             amount: orderDb.totalAmount,
             currency: orderDb.currency,
             paymentMethod: 'vnpay',

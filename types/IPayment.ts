@@ -23,10 +23,10 @@ export interface IVnpayCreateUrlReq {
 }
 export interface IVnpayDetails{
     ipAddr: string,
+    currCode: string,
     tnx: string
     orderInfo: string,
     orderType: string
     amount: number
-    currCode: string,
     bankCode?: string
 }

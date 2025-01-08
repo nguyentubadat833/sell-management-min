@@ -51,10 +51,14 @@ export default defineNuxtConfig({
         '@nuxt/image',
         '@nuxt/content',
         '@nuxtjs/device',
-        'nuxt-paypal'
+        'nuxt-paypal',
+        '@nuxtjs/ngrok'
     ],
     paypal: {
         clientId: 'AekPE1obxYWN4XbykdUaAOnC3imQBfKw-5z8iXwwNhxo3iURtz27voWVNWdLroHkmg5gKl8P3Nfnzzpl',
+    },
+    ngrok: {
+        authtoken_from_env: true
     },
     auth: {
         provider: {
