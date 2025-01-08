@@ -51,7 +51,7 @@ function deleteOrder(id: string) {
 
 function toPayment(id: string) {
   if (isString(id)) {
-    navigateTo(`/order/payment?orderId=${id}`)
+    navigateTo(`/payment?orderId=${id}`)
   }
 }
 

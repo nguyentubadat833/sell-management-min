@@ -1,7 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import fs from 'fs';
+import path from 'path';
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
+    devServer: {
+        port: Number(process.env.NUXT_APP_DEV_PORT) ?? 3000,
+        https: {
+            key: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.key')).toString(),
+            cert: fs.readFileSync(path.resolve(__dirname, './ssl/localhost.crt')).toString(),
+        }
+    },
     ssr: true,
     devtools: {enabled: true},
     // srcDir: 'src/',
@@ -19,6 +28,16 @@ export default defineNuxtConfig({
             google: {
                 id: process.env.NUXT_AUTH_GOOGLE_CLIENT_ID,
                 secret: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
+            }
+        },
+        vnpay: {
+            tmnCode: process.env.NUXT_VNPAY_TMN_CODE,
+            secretKey: process.env.NUXT_VNPAY_SECRET_KEY,
+            paymentUrl: process.env.NUXT_VNPAY_URL_PAYMENT
+        },
+        public: {
+            vnpay: {
+                returnUrl: process.env.NUXT_VNPAY_RETURN_URL
             }
         }
     },

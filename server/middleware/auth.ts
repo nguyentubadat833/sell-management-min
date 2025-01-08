@@ -7,7 +7,7 @@ const prefixRequiredAuth = [
     '/api/control',
     '/api/file',
     '/api/client/order',
-    '/api/client/payment'
+    '/api/client/payment',
 ]
 export default defineEventHandler(async (event) => {
     const pathRequest = getRequestURL(event).pathname

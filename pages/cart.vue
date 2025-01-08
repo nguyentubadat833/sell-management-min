@@ -44,13 +44,13 @@ function removeProduct(code: string) {
   if (code) {
     toast.add({
       color: 'red',
-      title: 'Delete',
+      title: 'Xóa',
       actions: [
         {
-          label: 'No'
+          label: 'Không'
         },
         {
-          label: 'Yes',
+          label: 'Tiếp tục',
           click: async () => {
             cartInfo().removeProduct(code)
             countCartProducts.value = cartInfo().countProducts()
