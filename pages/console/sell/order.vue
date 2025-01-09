@@ -49,7 +49,7 @@ const filteredRows = computed(() => {
         <div>
           <span v-if="row?.payment?.status === 1" class="bg-green-300 p-1">Đã thanh toán</span>
           <span v-else-if="!row?.payment || !row?.payment?.status" class="p-1">Chưa thanh toán</span>
-          <span v-else-if="row?.payment?.status === 2" class="bg-yellow-200 p-1">Thanh toán chưa đủ</span>
+          <span v-else-if="row?.payment?.status === 2" class="bg-yellow-200 p-1">Thanh toán không khớp</span>
         </div>
       </template>
     </UTable>

@@ -39,7 +39,7 @@ model Category {
   name        String
   alias       String  @unique
   status      Int     @default(1)
-  type        String
+  // type        String
   parentId    String?
   childrenIds Json?
 
@@ -100,11 +100,11 @@ model Payment {
   id                String    @id @default(uuid())
   orderId           String    @unique
   transactionId     String?
-  amount            Float
-  currency          String
+  amount            Float?
+  currency          String?
   paymentMethod     String
   details           Json?
-  status            Int       @default(0)
+  status            Int       @default(0) // 1: success, 2: amount greater than or less than
   paymentAt         DateTime?
   paymentCompleteAt DateTime?
 

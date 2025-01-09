@@ -35,17 +35,19 @@ export default defineEventHandler(async (event) => {
         const paymentDb = orderData?.payment
         const paymentDbStatus = paymentDb?.status
         let vnpayDetailsDb = paymentDb?.details as unknown as IVnpayDetails
+        vnpayDetailsDb!.bankCode = bankCodeReq
         if (orderData && orderDbStatus === 1 && paymentDb && vnpayDetailsDb?.tnx === txnRefReq) {
-            if (paymentDb.amount === amountReq / 100) {
+            const convertAmountReq = amountReq / 100
+            if (paymentDb.amount === convertAmountReq) {
                 if (paymentDbStatus === 0) {
                     if (rspCodeReq == "00") {
-                        vnpayDetailsDb!.bankCode = bankCodeReq
                         await prisma.payment.update({
                             where: {
-                                orderId: paymentDb.orderId
+                                orderId: paymentDb.orderId,
                             },
                             data: {
                                 transactionId: transactionNoReq,
+                                amount: convertAmountReq,
                                 status: 1,
                                 details: vnpayDetailsDb as unknown as Prisma.JsonObject,
                                 paymentCompleteAt: moment(payDateReq, "YYYYMMDDHHmmss").format()
@@ -55,7 +57,7 @@ export default defineEventHandler(async (event) => {
                         return {RspCode: '00', Message: 'Success'}
                     } else {
                         console.log('Error')
-                        return {RspCode: '00', Message: 'Success'}
+                        return {RspCode: '02', Message: 'Error'}
                     }
                 } else {
                     console.log('This order has been updated to the payment status')
@@ -63,6 +65,18 @@ export default defineEventHandler(async (event) => {
                 }
             } else {
                 console.log('Amount invalid')
+                await prisma.payment.update({
+                    where: {
+                        orderId: paymentDb.orderId,
+                    },
+                    data: {
+                        transactionId: transactionNoReq,
+                        amount: convertAmountReq,
+                        status: 2,
+                        details: vnpayDetailsDb as unknown as Prisma.JsonObject,
+                        paymentCompleteAt: moment(payDateReq, "YYYYMMDDHHmmss").format()
+                    }
+                })
                 return {RspCode: '04', Message: 'Amount invalid'}
             }
         } else {

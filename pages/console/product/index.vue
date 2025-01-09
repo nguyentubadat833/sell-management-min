@@ -201,6 +201,7 @@ async function removeImage(imageName: string) {
               >
                 <template #option="{ option: category }">
                   <div class="flex gap-3">
+<!--                    <span class="font-medium text-gray-400,">{{category.type}}</span>-->
                     <span class="truncate w-24">{{ category.id }}</span>
                     <span class="truncate">{{ category.name }}</span>
                   </div>

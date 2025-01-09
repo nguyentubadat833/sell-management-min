@@ -2,7 +2,7 @@ export interface IConsoleCategoryReq {
     id?: string
     name: string
     status?: number
-    type: ECategoryType
+    // type: ECategoryType
     parentId?: string
     childrenIds?: any
 }
@@ -17,7 +17,7 @@ export interface IConsoleCategoryRes {
     createdAt: any
 }
 
-export enum ECategoryType {
-    TWO_D = '2D',
-    THREE_D = '3D',
-}
+// export enum ECategoryType {
+//     TWO_D = '2D',
+//     THREE_D = '3D',
+// }

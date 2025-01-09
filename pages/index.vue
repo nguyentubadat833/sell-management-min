@@ -13,8 +13,6 @@ onMounted(() => {
     carouselRef.value.next()
   }, 3000)
 })
-
-console.log(indexData.value)
 </script>
 
 <template>

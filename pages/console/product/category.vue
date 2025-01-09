@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ECategoryType, type IConsoleCategoryReq} from "~/types/TCategory";
+import {type IConsoleCategoryReq} from "~/types/TCategory";
 
 definePageMeta({
   name: 'Category Management'
@@ -23,16 +23,15 @@ const sort = ref({
 
 const categoryColumns = [
   {key: 'id', label: 'Id'},
-  {key: 'type', label: 'Type'},
-  {key: 'name', label: 'Name'},
+  {key: 'parentId', label: 'Parent', sortable: true},
+  {key: 'name', label: 'Name', sortable: true},
   {key: 'status', label: 'Status'},
   {key: 'createdAt', label: 'Created At', sortable: true}
 ]
 const initCategoryState: IConsoleCategoryReq = {
   id: '',
   name: '',
-  status: 1,
-  type: ECategoryType.THREE_D
+  status: 1
 }
 
 const q = ref('')
@@ -54,6 +53,14 @@ const filteredRows = computed(() => {
     return []
   }
 })
+
+function getCategoryName(id: string) {
+  if (id) {
+    return categoryData.value?.find(e => e.id === id)?.name ?? 'unknown'
+  } else {
+    return ''
+  }
+}
 
 function getStatusLabel(status: number) {
   const find = categoryStatusOptions.find(e => e.value === status)
@@ -100,6 +107,9 @@ async function saveCategory() {
       <UInput v-model="q" placeholder="Filter with name..."/>
     </div>
     <UTable :rows="filteredRows" :columns="categoryColumns" @select="selectCategory" :sort="sort" class="max-h-[70vh]">
+      <template #parentId-data="{row}">
+        <span>{{ getCategoryName(row.parentId) }}</span>
+      </template>
       <template #status-data="{row}">
         <span>{{ getStatusLabel(row.status) }}</span>
       </template>
@@ -120,10 +130,10 @@ async function saveCategory() {
             <UFormGroup label="Name" :error="!categoryState.name">
               <UInput v-model="categoryState.name" placeholder="Enter category name"/>
             </UFormGroup>
-            <UFormGroup label="Type">
-              <USelect v-model="categoryState.type" :options="Object.values(ECategoryType)"
-                       placeholder="Select a type"/>
-            </UFormGroup>
+            <!--            <UFormGroup label="Type">-->
+            <!--              <USelect v-model="categoryState.type" :options="Object.values(ECategoryType)"-->
+            <!--                       placeholder="Select a type"/>-->
+            <!--            </UFormGroup>-->
             <UFormGroup label="Parent">
               <USelectMenu
                   v-model="categoryState.parentId"
@@ -132,7 +142,7 @@ async function saveCategory() {
                   searchable
                   searchable-placeholder="Search by id or name"
                   option-attribute="name"
-                  by="id"
+                  value-attribute="id"
                   :search-attributes="['id', 'name']"
               >
                 <template #option="{ option: category }">
