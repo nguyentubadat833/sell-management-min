@@ -21,7 +21,7 @@ const userNavItems: {
     }
   },
   {
-    label: 'Lịch sử đơn hàng',
+    label: 'Lịch sử mua hàng',
     // icon: 'mdi:history',
     click: () => {
       navigateTo('/order/history')
@@ -120,7 +120,9 @@ onBeforeMount(() => {
     </footer>
     <ClientOnly>
       <UModal v-model="isOpenSearch">
-        <ClientSearch @searchComplete="searchComplete"/>
+        <div>
+          <ClientSearch @searchComplete="searchComplete"/>
+        </div>
       </UModal>
     </ClientOnly>
     <DevOnly>

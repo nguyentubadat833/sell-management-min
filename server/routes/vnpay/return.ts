@@ -7,14 +7,10 @@ export default defineEventHandler(async (event) => {
     delete vnp_Params['vnp_SecureHashType'];
 
     vnp_Params = vnpayUtils().sortObject(vnp_Params);
-
+    const code = vnp_Params['vnp_ResponseCode']
     if (secureHash === vnpayUtils().generateSigned(vnp_Params)) {
-        //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-        console.log('code:', vnp_Params['vnp_ResponseCode'])
-        // res.render('success', {code: vnp_Params['vnp_ResponseCode']})
-        return sendRedirect(event, `/payment/vnpay_return?code=${vnp_Params['vnp_ResponseCode']}`)
+        return sendRedirect(event, `/payment/vnpay_return?isValid=true&code=${code}`)
     } else {
-        // res.render('success', {code: '97'})
-        return sendRedirect(event, `/payment/vnpay_return?code=${vnp_Params['vnp_ResponseCode']}`)
+        return sendRedirect(event, `/payment/vnpay_return?code=${code}`)
     }
 })

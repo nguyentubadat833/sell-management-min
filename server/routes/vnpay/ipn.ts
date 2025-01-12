@@ -3,10 +3,11 @@ import prisma from "~/lib/prisma";
 import {IVnpayDetails} from "~/types/IPayment";
 import {Prisma} from "@prisma/client";
 import moment from "moment";
+import chalk from "chalk";
 
 export default defineEventHandler(async (event) => {
     let vnp_Params = getQuery(event)
-    console.log('params: ', vnp_Params)
+    // console.log('params: ', vnp_Params)
     const secureHashReq = vnp_Params['vnp_SecureHash'] as string
     const amountReq = _.toNumber(vnp_Params['vnp_Amount'])
     const bankCodeReq = vnp_Params['vnp_BankCode'] as string
@@ -37,8 +38,7 @@ export default defineEventHandler(async (event) => {
         let vnpayDetailsDb = paymentDb?.details as unknown as IVnpayDetails
         vnpayDetailsDb!.bankCode = bankCodeReq
         if (orderData && orderDbStatus === 1 && paymentDb && vnpayDetailsDb?.tnx === txnRefReq) {
-            const convertAmountReq = amountReq / 100
-            if (paymentDb.amount === convertAmountReq) {
+            if (vnpayDetailsDb.amount === amountReq) {
                 if (paymentDbStatus === 0) {
                     if (rspCodeReq == "00") {
                         await prisma.payment.update({
@@ -47,17 +47,17 @@ export default defineEventHandler(async (event) => {
                             },
                             data: {
                                 transactionId: transactionNoReq,
-                                amount: convertAmountReq,
+                                amount: amountReq / 100,
                                 status: 1,
                                 details: vnpayDetailsDb as unknown as Prisma.JsonObject,
                                 paymentCompleteAt: moment(payDateReq, "YYYYMMDDHHmmss").format()
                             }
                         })
-                        console.log('Success')
+                        console.log(chalk.green('Payment Success'))
                         return {RspCode: '00', Message: 'Success'}
                     } else {
                         console.log('Error')
-                        return {RspCode: '02', Message: 'Error'}
+                        return {RspCode: '02', Message: 'Payment Error'}
                     }
                 } else {
                     console.log('This order has been updated to the payment status')
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
                     },
                     data: {
                         transactionId: transactionNoReq,
-                        amount: convertAmountReq,
+                        amount: amountReq / 100,
                         status: 2,
                         details: vnpayDetailsDb as unknown as Prisma.JsonObject,
                         paymentCompleteAt: moment(payDateReq, "YYYYMMDDHHmmss").format()

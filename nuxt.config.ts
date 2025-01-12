@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
@@ -52,14 +52,14 @@ export default defineNuxtConfig({
         '@nuxt/content',
         '@nuxtjs/device',
         'nuxt-paypal',
-        // '@nuxtjs/ngrok'
+        '@nuxtjs/ngrok'
     ],
     paypal: {
         clientId: 'AekPE1obxYWN4XbykdUaAOnC3imQBfKw-5z8iXwwNhxo3iURtz27voWVNWdLroHkmg5gKl8P3Nfnzzpl',
     },
-    // ngrok: {
-    //     authtoken_from_env: true
-    // },
+    ngrok: {
+        authtoken_from_env: true
+    },
     auth: {
         provider: {
             type: 'authjs',

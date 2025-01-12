@@ -57,7 +57,8 @@ export interface IProductCart {
 }
 
 export interface ICategoryInfo {
-    // code: string
+    id: string
+    parentId?: string | null
     name: string
     alias: string
 }
@@ -67,7 +68,10 @@ export interface IClientSearchData {
     products: {
         name: string
         alias: string
-        category: ICategoryInfo,
+        category: {
+            name: string
+            alias: string
+        },
         images: IImageInfo[]
     }[]
 }
@@ -75,4 +79,11 @@ export interface IClientSearchData {
 export interface IOrderRes {
     totalAmount: number
     currency: string
+}
+
+export interface ICategoryMenuTreeItem {
+    alias: string
+    label: string
+    click: any
+    children?: ICategoryMenuTreeItem[];
 }

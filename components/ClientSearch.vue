@@ -1,20 +1,37 @@
 <script setup lang="ts">
+import type {ICategoryInfo, ICategoryMenuTreeItem} from "~/types/TClient";
+import CategoryItem from "~/components/CategoryItem.vue";
+
+
 const emit = defineEmits(['searchComplete'])
-
-const router = useRouter()
 const {data: searchData} = await useFetch('/api/client/search-data')
-const commandPaletteRef = ref()
+const router = useRouter()
+const categoryTree = ref<ICategoryMenuTreeItem[]>()
 
-const categoriesActions = computed(() => searchData.value?.categories?.map(category => {
-  return {
-    id: category.alias,
-    label: category.name,
-    click: () => {
-      navigateTo(`/search/ctg/${category.alias}`)
-      emit('searchComplete')
-    }
-  }
-}))
+function buildCategoryTree(
+    categories: ICategoryInfo[],
+    parentId: string | null = null
+): ICategoryMenuTreeItem[] {
+  return categories
+      .filter(category => category.parentId === parentId)
+      .map(category => ({
+        ...{
+          alias: category.alias,
+          label: category.name,
+          click: () => {
+            navigateTo(`/search/ctg/${category.alias}`)
+            emit('searchComplete')
+          }
+        },
+        children: buildCategoryTree(categories, category.id),
+      }));
+}
+
+onBeforeMount(() => {
+  categoryTree.value = buildCategoryTree(searchData.value!.categories)
+})
+
+console.log(searchData.value)
 const productsActions = computed(() => searchData.value?.products?.map(product => {
   return {
     id: product.alias,
@@ -30,23 +47,6 @@ const productsActions = computed(() => searchData.value?.products?.map(product =
   }
 }))
 
-const groups = computed(() =>
-    [commandPaletteRef.value?.query
-        ? {
-          key: 'products',
-          label: 'Tìm kiếm theo sản phẩm',
-          commands: productsActions.value
-        }
-        : {
-          key: 'recent',
-          label: 'Gợi ý mới nhất',
-          commands: productsActions.value?.slice(0, 5)
-        }, {
-      key: 'categories',
-      label: 'Tìm kiếm theo danh mục',
-      commands: categoriesActions.value
-    }].filter(Boolean))
-
 function onSelect(option: any) {
   if (option.click) {
     option.click()
@@ -56,11 +56,24 @@ function onSelect(option: any) {
     window.open(option.href, '_blank')
   }
 }
+
+
 </script>
 
 <template>
-  <div>
-    <UCommandPalette ref="commandPaletteRef" class="min-h-96 max-h-[70vh]" :groups="groups" :autoselect="false" @update:model-value="onSelect"/>
+  <div class="p-3">
+    <UInput
+        icon="heroicons:magnifying-glass-solid"
+        :padded="false"
+        placeholder="Tìm kiếm..."
+        variant="none"
+        class="w-full"
+    />
+    <UDivider class="py-2"/>
+    <div class="flex gap-14 max-h-[70vh] overflow-hidden overflow-y-auto p-1">
+      <CategoryItem v-for="item in categoryTree" :data="item"/>
+    </div>
+    <!--    <UCommandPalette ref="commandPaletteRef" :groups="groups" :autoselect="false" @update:model-value="onSelect"/>-->
   </div>
 </template>
 

@@ -11,8 +11,9 @@ export default defineEventHandler(async (): Promise<IClientSearchData> => {
             status: 1
         },
         select: {
+            id: true,
+            parentId: true,
             name: true,
-            // code: true,
             alias: true
         }
     })
