@@ -21,6 +21,11 @@ export interface IOrderRes {
     totalAmount: number
 }
 
+export interface IOrderInfoRes {
+    currency: string
+    totalAmount: number
+}
+
 
 export interface ISelectedOrderSession {
     products: IProductCart[]

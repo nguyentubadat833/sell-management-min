@@ -1,7 +1,5 @@
-import type {ILocalStorageCartHistory} from "~/types/TClient";
 import type {ISelectedOrderSession} from "~/types/TOrder";
-
-// export const orderProducts = ref<IOrderDetailReq[]>([])
+import type {ILocalStorageCartHistory} from "~/types/TCart";
 export const countCartProducts = ref(0)
 
 

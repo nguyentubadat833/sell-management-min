@@ -9,7 +9,7 @@ const handleError = () => clearError({redirect: '/'})
 </script>
 
 <template>
-  <div class="h-screen flex justify-center items-center">
+  <div class="h-screen flex justify-center items-center px-5">
     <UCard class="w-96">
       <template #header>
         <div class="flex justify-center ">

@@ -1,45 +1,37 @@
 <script setup lang="ts">
 
-import type {IOrderRes} from "~/types/TClient";
 import type {TOrderExchangeRate} from "~/types/TOrder";
-import type {IVnpayCreateUrlReq} from "~/types/IPayment";
+import type {IVnPayCreateUrlReq} from "~/types/TPayment";
 
 const orderIdReq = computed(() => useRoute().query?.orderId)
 const isPaymentPaypal = ref(false)
 const isPaypalInitialized = ref(false)
 const isPayment = ref(false)
-const isNotFound = ref(false)
-const orderData = ref<IOrderRes>()
+
+await $fetch('/api/client/order/isPaid', {
+  params: {
+    orderId: orderIdReq.value
+  }
+}).then(value => {
+  if (value === false) {
+    isPayment.value = true
+  }
+})
 
 async function getOrderData() {
-  orderData.value = await $fetch(`/api/client/order/get`, {
+  return await $fetch(`/api/client/order/get`, {
     params: {
       id: orderIdReq.value
     }
   })
 }
 
-onBeforeMount(async () => {
-  const isPaid = await $fetch('/api/client/order/isPaid', {
-    params: {
-      orderId: orderIdReq.value
-    }
-  }).catch(err => {
-    if (err?.status === 404) {
-      isNotFound.value = true
-    }
-  })
-  if (isPaid === false) {
-    isPayment.value = true
-  }
-})
-
 async function paymentPaypal() {
   if (isPaypalInitialized.value) {
     return
   }
-  await getOrderData()
-  if (orderData.value) {
+  const orderData = await getOrderData()
+  if (orderData) {
     isPaymentPaypal.value = true
     const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
       params: {
@@ -110,7 +102,7 @@ async function paymentVNPAY() {
     method: 'POST',
     body: {
       orderId: orderIdReq.value
-    } as IVnpayCreateUrlReq
+    } as IVnPayCreateUrlReq
   })
   navigateTo(createUrl, {
     external: true
@@ -121,11 +113,7 @@ async function paymentVNPAY() {
 <template>
   <div class="space-y-6">
     <ClientOnly>
-      <div v-if="isNotFound" class="flex items-center gap-2">
-        <Icon name="heroicons:exclamation-triangle-16-solid" size="30" class="text-gray-600"/>
-        <span class="text-lg">Đơn hàng không tồn tại</span>
-      </div>
-      <div v-else>
+      <div>
         <UCard class="md:w-[50rem] mx-auto">
           <template #header>
             <div class="flex items-center gap-2">

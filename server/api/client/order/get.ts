@@ -1,8 +1,8 @@
 import prisma from "~/lib/prisma";
-import {IOrderRes} from "~/types/TClient";
 import _ from "lodash";
+import {IOrderInfoRes} from "~/types/TOrder";
 
-export default defineEventHandler(async (event): Promise<IOrderRes | null> => {
+export default defineEventHandler(async (event): Promise<IOrderInfoRes | null> => {
     const {id} = getQuery(event)
     if (_.isString(id)) {
         return prisma.order.findUnique({
