@@ -14,7 +14,7 @@ export interface IProfileRes {
 }
 
 export interface IProfileSaveReq {
-    deliveryInfo: IUserDeliveryInfo[] | any
+    deliveryInfo: IUserDeliveryInfo[]
 }
 
 export interface IUserProfile {
@@ -23,6 +23,8 @@ export interface IUserProfile {
 }
 
 export interface IUserDeliveryInfo {
+    name: string
     phone: string
     address: string
+    isDefault: boolean
 }

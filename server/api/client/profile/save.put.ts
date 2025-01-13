@@ -1,31 +1,37 @@
-import {IProfileSaveReq} from "~/types/TProfile";
 import prisma from "~/lib/prisma";
-import {IUserProfile} from "~/types/TUser";
+import {IProfileSaveReq, IUserDeliveryInfo, IUserProfile} from "~/types/TUser";
+import {Prisma} from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
     const body: IProfileSaveReq = await readBody(event)
     const userId = await getUserIdLogged(event)
-    const profile = await prisma.account.findUnique({
-        where: {
-            id: userId
-        },
-        select: {
-            profile: true
-        }
-    }).then(data => data?.profile as IUserProfile)
-    profile.name = body.name
-    profile.shippingAddress = body.shippingAddress
-    const result = await prisma.account.update({
+    body.deliveryInfo = validateDeliveryInfo(body.deliveryInfo)
+    const data = await prisma.account.update({
         where: {
             id: userId
         },
         data: {
-            profile: {
-                ...profile
-            }
+            deliveryInfo: body.deliveryInfo as unknown as Prisma.JsonArray
         }
     })
-    if (result) {
-        return result.id
+    if (data) {
+        return 'success'
     }
 })
+
+function validateDeliveryInfo(deliveryInfo: IUserDeliveryInfo[]) {
+    if (deliveryInfo.length > 1) {
+        const defaultCount = deliveryInfo.filter(item => item.isDefault).length;
+        if (defaultCount > 1) {
+            throw createError({
+                statusCode: 404,
+                statusMessage: 'Duplicate default delivery'
+            })
+        } else if (!defaultCount) {
+            deliveryInfo[0].isDefault = true
+        }
+    } else if (deliveryInfo.length === 1) {
+        deliveryInfo[0].isDefault = true
+    }
+    return deliveryInfo
+}
