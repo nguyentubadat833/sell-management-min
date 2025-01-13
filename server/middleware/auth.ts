@@ -1,14 +1,7 @@
 import {getServerSession} from '#auth'
 import {EUserType} from "~/types/TUser";
 
-const prefixRequiredAuth = [
-    '/user',
-    '/console',
-    '/api/control',
-    '/api/file',
-    '/api/client/order',
-    '/api/client/payment',
-]
+
 export default defineEventHandler(async (event) => {
     const pathRequest = getRequestURL(event).pathname
     if (prefixRequiredAuth.some(prefix => pathRequest.startsWith(prefix))) {

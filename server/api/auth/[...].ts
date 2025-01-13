@@ -27,17 +27,16 @@ export default NuxtAuthHandler({
                     create: {
                         provider: EAuthProvider.GOOGLE,
                         providerAccountId: user.id,
-                        email: user?.email,
+                        email: user!.email,
                         userType: EUserType.CUSTOMER as string,
                         profile: {
-                            name: user?.name,
+                            name: user!.name,
                             avatar: user?.image,
-                            shippingAddress: user?.email
                         } as IUserProfile as Prisma.JsonObject
                     },
                     update: {
                         profile: {
-                            // name: user?.name,
+                            name: user?.name,
                             avatar: user?.image
                         } as IUserProfile as Prisma.JsonObject
                     }

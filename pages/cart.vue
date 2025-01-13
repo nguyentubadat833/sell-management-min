@@ -126,13 +126,13 @@ onBeforeMount(async () => {
       <template #default>
         <div class="min-h-[50vh] max-h-[60vh] overflow-hidden overflow-y-auto">
           <div v-for="(product, index) in cartData?.products">
-            <div class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-slate-800 md:py-4 py-2 group">
+            <div class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-slate-800 md:py-4 py-2 group ">
               <label class="flex items-center pl-2 sm:h-32 h-16 w-8">
                 <UCheckbox v-model="product.selectedOrder" @change="changeCheckBox($event, product, index)"/>
               </label>
               <div class="flex gap-3 w-full">
                 <div
-                    class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
+                    class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600 rounded">
                   <NuxtImg :src="getImageProductUrl(product)"
                            class="w-full object-cover"/>
                 </div>

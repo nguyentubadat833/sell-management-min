@@ -75,8 +75,8 @@ const {products, dividerLabel} = defineProps({
     <UDivider v-if="dividerLabel" :label="dividerLabel"/>
     <div class="grid md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 grid-cols-2 gap-4 md:gap-7">
       <div v-for="product in products"
-           class="p-2 group overflow-hidden space-y-2 hover:bg-stone-300 dark:hover:bg-slate-800">
-        <div class="relative aspect-[1/1] overflow-hidden flex items-center justify-between">
+           class="p-2 group overflow-hidden space-y-2 hover:bg-stone-300 dark:hover:bg-slate-800 rounded">
+        <div class="relative aspect-[1/1] overflow-hidden flex items-center justify-between rounded">
           <div class="absolute top-2 right-2 hidden group-hover:block">
             <UButton @click="cartInfo().addProduct(product.id)" icon="heroicons:shopping-cart-16-solid" color="orange" variant="soft" />
           </div>
