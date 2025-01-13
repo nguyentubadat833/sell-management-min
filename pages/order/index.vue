@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {IOrderReq, IOrderRes} from "~/types/TOrder";
-import type {IProductCart} from "~/types/TClient";
+import type {IOrderReq} from "~/types/TOrder";
+import type {IProductCart} from "~/types/TCart";
 
 const {data: authData} = useAuth()
 
@@ -72,8 +72,8 @@ async function toPayment() {
                   <div class="flex gap-3 w-full">
                     <div
                         class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
-                      <NuxtImg :src="getProductImageUrl(product.images[0])"
-                               class="w-full object-cover"/>
+                        <NuxtImg :src="getProductImageUrl(product.images[0])"
+                                 class="w-full object-cover"/>
                     </div>
                     <div class="flex flex-col justify-between w-full">
                   <span @click="navigateTo(`/search/prd/${product.alias}`)"

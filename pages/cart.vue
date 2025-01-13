@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type {ICartDataReq, ICartDataRes} from "~/types/TClient";
+
+import type {ICartDataReq, ICartDataRes} from "~/types/TCart";
 
 const {data: authData} = useAuth()
 const toast = useToast()
