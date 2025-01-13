@@ -3,19 +3,22 @@
 import type {TOrderExchangeRate} from "~/types/TOrder";
 import type {IVnPayCreateUrlReq} from "~/types/TPayment";
 
-const orderIdReq = computed(() => useRoute().query?.orderId)
+const orderIdReq = ref()
 const isPaymentPaypal = ref(false)
 const isPaypalInitialized = ref(false)
 const isPayment = ref(false)
 
-await $fetch('/api/client/order/isPaid', {
-  params: {
-    orderId: orderIdReq.value
-  }
-}).then(value => {
-  if (value === false) {
-    isPayment.value = true
-  }
+onBeforeMount(async () => {
+  orderIdReq.value = useRoute().query?.orderId
+  await $fetch('/api/client/order/isPaid', {
+    params: {
+      orderId: orderIdReq.value
+    }
+  }).then(value => {
+    if (value === false) {
+      isPayment.value = true
+    }
+  })
 })
 
 async function getOrderData() {
@@ -145,8 +148,8 @@ async function paymentVNPAY() {
               </div>
             </div>
             <div v-else class="flex items-center gap-2">
-              <Icon name="mdi:checkbox-marked-circle-outline" size="50" class="text-green-600"/>
-              <span class="text-lg">Đã thanh toán</span>
+              <Icon name="mdi:checkbox-marked-circle-outline" size="40" class="text-green-600"/>
+              <span>Đã thanh toán</span>
             </div>
           </template>
         </UCard>

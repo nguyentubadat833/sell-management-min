@@ -32,7 +32,7 @@ export interface IVnPayDetails{
 }
 
 export enum EVnPayRsp {
-    C00 = 'Giao dịch thành công',
+    C00 = 'Giao dịch đang tiến hành',
     C07 = 'Giao dịch bất thường',
     C09 = 'Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.',
     C10 = 'Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần',

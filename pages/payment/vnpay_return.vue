@@ -18,10 +18,22 @@ const message = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-2">
-    <Icon v-if="isValid" name="mdi:checkbox-marked-circle-outline" size="50" class="text-green-600"/>
-    <Icon v-else name="heroicons:exclamation-triangle-16-solid" size="30" class="text-red-500"/>
-    <span>{{ message }}</span>
+  <div>
+    <UCard>
+      <template #header>
+        <div class="flex items-center gap-2">
+          <Icon name="ic:outline-payments" size="25"/>
+          <div class="font-bold text-lg">Trạng thái giao dịch</div>
+        </div>
+      </template>
+      <template #default>
+        <div class="flex items-center gap-2">
+          <Icon v-if="isValid" name="mdi:checkbox-marked-circle-outline" size="40" class="text-green-600"/>
+          <Icon v-else name="heroicons:exclamation-triangle-16-solid" size="40" class="text-red-500"/>
+          <span>{{ message }}</span>
+        </div>
+      </template>
+    </UCard>
   </div>
 </template>
 
