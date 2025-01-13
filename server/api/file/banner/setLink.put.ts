@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     if (id && link) {
         await prisma.image.update({
             where: {
-                id: id
+                name: id
             },
             data: {
                 link: link

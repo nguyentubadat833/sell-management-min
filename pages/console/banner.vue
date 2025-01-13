@@ -35,7 +35,7 @@ async function removeImage(imageId: number) {
       method: 'DELETE',
       params: {
         imageId: imageId
-      } as IProductRemoveImage
+      } as unknown as IProductRemoveImage
     })
     if (result) {
       await refresh()

@@ -1,11 +1,12 @@
-import type {IProductSearchAndSuggestion} from "~/types/TClient";
 import prisma from "~/lib/prisma";
+import {IProductSearchAndSuggestion} from "~/types/TSearch";
 
 const select = {
     category: {
         select: {
+            id: true,
             name: true,
-            alias: true
+            alias: true,
         }
     },
     id: true,

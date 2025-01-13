@@ -2,7 +2,6 @@ import prisma from "~/lib/prisma";
 import {IProductRemoveImage} from "~/types/TProduct";
 import {rm} from "fs/promises";
 import path from "node:path";
-import _ from "lodash";
 
 export default defineEventHandler(async (event) => {
     const {imageName}: IProductRemoveImage = getQuery(event)

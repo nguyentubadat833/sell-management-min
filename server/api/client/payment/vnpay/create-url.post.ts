@@ -1,11 +1,11 @@
 import moment from "moment";
 import * as querystring from "qs";
 import prisma from "~/lib/prisma";
-import {IVnpayCreateUrlReq, type IVnpayDetails} from "~/types/IPayment";
+import {IVnPayCreateUrlReq, IVnPayDetails} from "~/types/TPayment";
 import {Prisma} from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-    const body: IVnpayCreateUrlReq = await readBody(event)
+    const body: IVnPayCreateUrlReq = await readBody(event)
     const ipAddr = event.headers.get('x-forwarded-for') ||
         event.context.connection.remoteAddress ||
         event.context.socket.remoteAddress ||
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
                 amount: orderAmount,
                 currCode: currCode,
                 bankCode: bankCode ?? undefined
-            } as IVnpayDetails as unknown as Prisma.JsonObject
+            } as IVnPayDetails as unknown as Prisma.JsonObject
         },
         update: {
             // amount: orderDb.totalAmount,
@@ -94,7 +94,7 @@ export default defineEventHandler(async (event) => {
                 amount: orderAmount,
                 currCode: currCode,
                 bankCode: bankCode ?? undefined
-            } as IVnpayDetails as unknown as Prisma.JsonObject
+            } as IVnPayDetails as unknown as Prisma.JsonObject
         }
     })
    return vnpPaymentUrl

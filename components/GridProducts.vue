@@ -56,8 +56,8 @@
 
 
 <script setup lang="ts">
-import type {IProductSearch} from "~/types/TClient";
 import type {PropType} from "vue";
+import type {IProductSearch} from "~/types/TSearch";
 
 const {products, dividerLabel} = defineProps({
   dividerLabel: {

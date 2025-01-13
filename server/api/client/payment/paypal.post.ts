@@ -1,7 +1,7 @@
 import prisma from "~/lib/prisma";
-import {IPaypalReq} from "~/types/IPayment";
 import _ from "lodash";
 import {TOrderExchangeRate} from "~/types/TOrder";
+import {IPaypalReq} from "~/types/TPayment";
 
 export default defineEventHandler(async (event) => {
     const paypalRes = await readBody(event)

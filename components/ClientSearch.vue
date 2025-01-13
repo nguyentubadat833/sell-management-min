@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {ICategoryInfo, ICategoryMenuTreeItem} from "~/types/TClient";
 import CategoryItem from "~/components/CategoryItem.vue";
+import type {ICategoryInfo, ICategoryMenuTreeItem} from "~/types/TCategory";
 
 
 const emit = defineEmits(['searchComplete'])

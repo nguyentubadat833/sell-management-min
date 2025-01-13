@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import {IIndexData} from "~/types/TClient";
+import {IIndexData} from "~/types/TUtils";
 
 export default defineEventHandler(async (): Promise<IIndexData> => {
     const indexData: IIndexData = {products: []}

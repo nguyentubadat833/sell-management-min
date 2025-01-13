@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import {ICartDataReq, type ICartDataRes} from "~/types/TClient";
+import {ICartDataReq, ICartDataRes} from "~/types/TCart";
 
 export default defineEventHandler(async (event): Promise<ICartDataRes> => {
     const {productIdList} = await readBody(event) as ICartDataReq

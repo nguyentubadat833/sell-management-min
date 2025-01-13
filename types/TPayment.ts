@@ -15,13 +15,13 @@ export interface IPaypalReq {
     paymentAt: any
     paymentCompleteAt?: any
 }
-export interface IVnpayCreateUrlReq {
+export interface IVnPayCreateUrlReq {
     orderId: string,
     bankCode?: string,
     language?: 'vn' | 'en',
     orderType?: string
 }
-export interface IVnpayDetails{
+export interface IVnPayDetails{
     ipAddr: string,
     currCode: string,
     tnx: string
@@ -31,7 +31,7 @@ export interface IVnpayDetails{
     bankCode?: string
 }
 
-export enum EVnpayRsp {
+export enum EVnPayRsp {
     C00 = 'Giao dịch thành công',
     C07 = 'Giao dịch bất thường',
     C09 = 'Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.',

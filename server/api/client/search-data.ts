@@ -1,5 +1,5 @@
 import prisma from "~/lib/prisma";
-import {IClientSearchData} from "~/types/TClient";
+import {IClientSearchData} from "~/types/TSearch";
 
 export default defineEventHandler(async (): Promise<IClientSearchData> => {
     let res: IClientSearchData = {

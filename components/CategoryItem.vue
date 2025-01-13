@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {PropType} from "vue";
-import type {ICategoryMenuTreeItem} from "~/types/TClient";
+import type {ICategoryMenuTreeItem} from "~/types/TCategory";
 
 const {data} = defineProps({
   data: {

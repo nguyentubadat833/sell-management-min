@@ -1,9 +1,9 @@
 import _ from "lodash";
 import prisma from "~/lib/prisma";
-import {IVnpayDetails} from "~/types/IPayment";
 import {Prisma} from "@prisma/client";
 import moment from "moment";
 import chalk from "chalk";
+import {IVnPayDetails} from "~/types/TPayment";
 
 export default defineEventHandler(async (event) => {
     let vnp_Params = getQuery(event)
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
         const orderDbStatus = orderData?.status
         const paymentDb = orderData?.payment
         const paymentDbStatus = paymentDb?.status
-        let vnpayDetailsDb = paymentDb?.details as unknown as IVnpayDetails
+        let vnpayDetailsDb = paymentDb?.details as unknown as IVnPayDetails
         vnpayDetailsDb!.bankCode = bankCodeReq
         if (orderData && orderDbStatus === 1 && paymentDb && vnpayDetailsDb?.tnx === txnRefReq) {
             if (vnpayDetailsDb.amount === amountReq) {

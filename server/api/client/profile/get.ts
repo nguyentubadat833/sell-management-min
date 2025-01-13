@@ -1,5 +1,5 @@
-import {IProfileRes} from "~/types/TClient";
 import prisma from "~/lib/prisma";
+import {IProfileRes} from "~/types/TProfile";
 
 export default defineEventHandler(async (event): Promise<IProfileRes | null> => {
     return prisma.account.findUnique({

@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
                 name: body.name,
                 alias: slug(body.name),
                 categoryId: body.categoryId,
-                originalPrice: body?.originalPrice ? parseFloat(String(body.originalPrice)) : undefined,
+                originalPrice: parseFloat(String(body.originalPrice)),
                 status: body?.status ? toSafeInteger(body.status) : undefined,
                 createdBy: await getUserIdLogged(event),
                 images: body?.images && body.images.length > 0 ? {

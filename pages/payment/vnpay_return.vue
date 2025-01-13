@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {EVnpayRsp} from "~/types/IPayment";
+import {EVnPayRsp} from "~/types/TPayment";
 
 const query = useRoute().query
 const isValid = computed(() => query?.isValid === 'true')
@@ -9,7 +9,7 @@ const message = computed(() => {
   let code = query?.code as string
   if (isValid.value && code) {
     code = `C${code}`
-    message = EVnpayRsp[code as keyof typeof EVnpayRsp] || 'Mã phản hồi không hợp lệ';
+    message = EVnPayRsp[code as keyof typeof EVnPayRsp] || 'Mã phản hồi không hợp lệ';
   } else {
     message = 'Giao dịch không hợp lệ'
   }

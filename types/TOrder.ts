@@ -1,4 +1,4 @@
-import type {IProductCart} from "~/types/TClient";
+import type {IProductCart} from "~/types/TCart";
 
 export interface IOrderReq {
     id?: string
@@ -20,6 +20,7 @@ export interface IOrderRes {
     customerId: string
     totalAmount: number
 }
+
 
 export interface ISelectedOrderSession {
     products: IProductCart[]
