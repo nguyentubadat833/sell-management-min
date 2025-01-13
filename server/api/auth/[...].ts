@@ -16,7 +16,11 @@ export default NuxtAuthHandler({
     callbacks: {
         /* on before signin */
         async signIn({user, account, profile, email, credentials}) {
-            if (user && user?.id) {
+            if (user && user?.id && user?.email) {
+                const profile: IUserProfile = {
+                    name: user?.name as string || user.email as string,
+                    avatar: user?.image as string,
+                }
                 await prisma.account.upsert({
                     where: {
                         provider_providerAccountId: {
@@ -27,18 +31,12 @@ export default NuxtAuthHandler({
                     create: {
                         provider: EAuthProvider.GOOGLE,
                         providerAccountId: user.id,
-                        email: user!.email,
+                        email: user.email,
                         userType: EUserType.CUSTOMER as string,
-                        profile: {
-                            name: user!.name,
-                            avatar: user?.image,
-                        } as IUserProfile as Prisma.JsonObject
+                        profile: profile as unknown as Prisma.JsonObject
                     },
                     update: {
-                        profile: {
-                            name: user?.name,
-                            avatar: user?.image
-                        } as IUserProfile as Prisma.JsonObject
+                        profile: profile as unknown as Prisma.JsonObject
                     }
                 })
                 // console.log('user', user)

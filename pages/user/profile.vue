@@ -1,25 +1,33 @@
 <script setup lang="ts">
-import type {IProfileRes, IProfileSaveReq} from "~/types/TProfile";
 
-const {data: getProfile, refresh} = await useFetch('/api/client/profile/get', {
+import type {IProfileRes, IUserDeliveryInfo} from "~/types/TUser";
+
+const {data: userProfile, refresh} = await useFetch('/api/client/profile', {
   transform(value) {
     return value as IProfileRes
   }
 })
 
-console.log(getProfile.value)
 const toast = useToast()
-const profileState = reactive<IProfileSaveReq>({
+
+const profileState = reactive<{
+  name: string,
+  avatar?: string
+  email?: string,
+  deliveryInfo?: IUserDeliveryInfo[]
+}>({
+  avatar: '',
   name: '',
-  shippingAddress: ''
+  email: '',
+  deliveryInfo: [],
 })
 
-onBeforeMount(() => {
-  if (getProfile.value) {
-    profileState.name = getProfile.value?.profile.name
-    profileState.shippingAddress = getProfile.value?.profile.shippingAddress
-  }
-})
+if (userProfile.value) {
+  profileState.avatar = userProfile.value?.profile.avatar
+  profileState.name = userProfile.value?.profile.name
+  profileState.email = userProfile.value?.email ?? ''
+  profileState.deliveryInfo = userProfile.value?.deliveryInfo ?? []
+}
 
 async function save() {
   const data = await $fetch('/api/client/profile/save', {
@@ -40,29 +48,44 @@ async function save() {
   }
 }
 
+function addDelivery() {
+  profileState.deliveryInfo!.push({
+    phone: '',
+    address: ''
+  })
+}
 </script>
 
 <template>
   <div>
-    <UCard v-if="getProfile">
+    <UCard>
       <template #header>
         <div class="flex items-center gap-2">
-          <UAvatar :src="getProfile.profile?.avatar" alt="A" size="md"/>
+          <UAvatar :src="profileState.avatar" alt="A" size="md"/>
           <span class="text-xl font-bold">{{ profileState.name }}</span>
         </div>
       </template>
       <template #default>
         <div class="min-h-[50vh]">
-          <UForm class="md:w-96 mx-auto space-y-7" @submit="save">
+          <UForm class="md:w-96 mx-auto space-y-7" @submit="save" :state="profileState">
             <UFormGroup label="Name">
-              <UInput v-model="profileState.name"/>
+              <UInput :model-value="profileState.name"/>
             </UFormGroup>
-            <UFormGroup label="Email" v-if="getProfile.email">
-              <UInput disabled v-model="getProfile.email"/>
+            <UFormGroup label="Email" v-if="profileState.email">
+              <UInput disabled :model-value="profileState.email"/>
             </UFormGroup>
-            <UFormGroup label="Shipping address">
-              <UTextarea v-model="profileState.shippingAddress"/>
+            <UFormGroup label="Delivery Info">
+              <UCard v-for="info in profileState.deliveryInfo">
+                <!--                <UFormGroup label="Address">-->
+                <!--                  <UTextarea v-model="info.address"/>-->
+                <!--                </UFormGroup>-->
+                <!--                <UFormGroup label="Phone">-->
+                <!--                  <UTextarea v-model="info.phone"/>-->
+                <!--                </UFormGroup>-->
+              </UCard>
+              <UButton icon="heroicons:plus-20-solid" color="gray" @click="addDelivery"/>
             </UFormGroup>
+
             <UButton type="submit" label="Submit" block/>
           </UForm>
         </div>

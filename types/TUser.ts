@@ -7,7 +7,22 @@ export enum EAuthProvider {
     GOOGLE = "GOOGLE"
 }
 
+export interface IProfileRes {
+    email?: string | null
+    profile: IUserProfile
+    deliveryInfo?: IUserDeliveryInfo[]
+}
+
+export interface IProfileSaveReq {
+    deliveryInfo: IUserDeliveryInfo[] | any
+}
+
 export interface IUserProfile {
-    name?: string
+    name: string
     avatar?: string
+}
+
+export interface IUserDeliveryInfo {
+    phone: string
+    address: string
 }

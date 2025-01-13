@@ -27,6 +27,7 @@ model Account {
   providerAccountId String
   email             String?
   profile           Json
+  deliveryInfo      Json?
   userType          String
   registerAt        DateTime @default(now())
   orders            Order[]

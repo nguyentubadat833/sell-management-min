@@ -63,7 +63,6 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <!--  <div class="bg-main bg-repeat dark:bg-none bg-cover bg-center h-auto min-h-screen py-10 tracking-wider">-->
   <div class="dark:bg-none bg-cover bg-center h-auto min-h-screen py-10">
     <header class="fixed w-full space-y-4 z-50">
       <nav
