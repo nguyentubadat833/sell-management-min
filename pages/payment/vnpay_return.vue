@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {EVnpayRsp} from "~/types/IVnpay";
+
+import {EVnpayRsp} from "~/types/IPayment";
 
 const query = useRoute().query
 const isValid = computed(() => query?.isValid === 'true')

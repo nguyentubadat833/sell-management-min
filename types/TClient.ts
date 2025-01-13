@@ -1,3 +1,5 @@
+import type {IUserProfile} from "~/types/TUser";
+
 export interface IIndexData {
     banner?: IBannerImages[]
     products: IProductSearch[]
@@ -12,11 +14,6 @@ export interface IBannerImages {
     name: string
     location: string
     link?: string | null
-}
-
-export interface ISearchProductWithCategoryAlias {
-    categoryName: string
-    products: IProductSearch[]
 }
 
 export interface IProductSearch {
@@ -86,4 +83,16 @@ export interface ICategoryMenuTreeItem {
     label: string
     click: any
     children?: ICategoryMenuTreeItem[];
+}
+
+export interface IProfileRes {
+    email?: string | null
+    profile?: IUserProfile | any
+}
+
+export interface IProfileSave {
+    profile?: {
+        name?: string
+        shippingAddress?: string
+    }
 }

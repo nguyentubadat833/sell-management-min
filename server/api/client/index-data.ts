@@ -26,6 +26,7 @@ export default defineEventHandler(async (): Promise<IIndexData> => {
             createdAt: true,
             category: {
                 select: {
+                    id: true,
                     alias: true,
                     name: true,
                 }

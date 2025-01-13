@@ -1,5 +1,4 @@
 export enum EUserType {
-    SYSTEM = "SYSTEM",
     CONTROL = "CONTROL",
     CUSTOMER = "CUSTOMER",
 }
@@ -11,4 +10,5 @@ export enum EAuthProvider {
 export interface IUserProfile {
     name?: string
     avatar?: string
+    shippingAddress?: string
 }

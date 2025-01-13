@@ -31,12 +31,13 @@ export default NuxtAuthHandler({
                         userType: EUserType.CUSTOMER as string,
                         profile: {
                             name: user?.name,
-                            avatar: user?.image
+                            avatar: user?.image,
+                            shippingAddress: user?.email
                         } as IUserProfile as Prisma.JsonObject
                     },
                     update: {
                         profile: {
-                            name: user?.name,
+                            // name: user?.name,
                             avatar: user?.image
                         } as IUserProfile as Prisma.JsonObject
                     }
