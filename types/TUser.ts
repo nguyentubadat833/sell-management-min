@@ -26,5 +26,6 @@ export interface IUserDeliveryInfo {
     name: string
     phone: string
     address: string
+    email: string
     isDefault: boolean
 }

@@ -1,8 +1,15 @@
 import type {IProductCart} from "~/types/TCart";
 
+export interface IOrderShippingInfo {
+    name: string
+    address: string
+    phone: string
+    email: string
+}
+
 export interface IOrderReq {
     id?: string
-    shippingAddress: string
+    shippingInfo: IOrderShippingInfo
     shippingMethod: string
     currency: string
     details: IOrderDetailReq[]
@@ -35,7 +42,7 @@ export interface ISelectedOrderSession {
 export interface IOrderHistoryReq {
     id: string
     totalAmount: number
-    shippingAddress: string
+    shippingInfo: any | IOrderShippingInfo
     currency: string
     orderAt: any
     details: {
@@ -47,9 +54,9 @@ export interface IOrderHistoryReq {
         quantity: number
     }[],
     payment?: {
-        transactionId: string
-        amount: number
-        currency: string
+        transactionId?: string | null
+        amount?: number | null
+        currency?: string | null
         paymentMethod: string
         paymentAt: any
         status: number

@@ -67,16 +67,16 @@ model Product {
 }
 
 model Order {
-  id              String    @id @default(uuid())
-  customerId      String
-  totalAmount     Float
-  exchangeRate    Json?
-  shippingAddress String
-  shippingMethod  String
-  currency        String
-  status          Int       @default(1)
-  orderAt         DateTime  @default(now())
-  udpatedAt       DateTime?
+  id             String    @id @default(uuid())
+  customerId     String
+  totalAmount    Float
+  exchangeRate   Json?
+  shippingInfo   Json
+  shippingMethod String
+  currency       String
+  status         Int       @default(1)
+  orderAt        DateTime  @default(now())
+  udpatedAt      DateTime?
 
   details OrderDetail[]
   payment Payment?

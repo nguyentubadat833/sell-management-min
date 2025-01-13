@@ -2,6 +2,7 @@
 
 import type {IProfileRes, IProfileSaveReq, IUserDeliveryInfo} from "~/types/TUser";
 
+const {data: authData} = useAuth()
 const {data: userProfile, refresh} = await useFetch('/api/client/profile', {
   transform(value) {
     return value as IProfileRes
@@ -14,7 +15,7 @@ const profileState = reactive<{
   name: string,
   avatar?: string
   email?: string,
-  deliveryInfo?: IUserDeliveryInfo[]
+  deliveryInfo: IUserDeliveryInfo[]
 }>({
   avatar: '',
   name: '',
@@ -62,7 +63,8 @@ function addDelivery() {
     phone: '',
     address: '',
     name: '',
-    isDefault: false
+    isDefault: false,
+    email: authData.value?.user?.email || ''
   })
 }
 
@@ -100,59 +102,42 @@ function changeIsDefault(value: boolean, indexReq: number) {
 <template>
   <div>
     <ClientOnly>
-      <UCard>
-        <template #header>
-          <div class="flex items-center gap-2">
-            <UAvatar :src="profileState.avatar" alt="A" size="md"/>
-            <span class="text-xl font-bold">{{ profileState.name }}</span>
+      <div class="md:w-96 mx-auto space-y-4">
+        <UDivider label="Thông tin tài khoản"/>
+        <div class="space-y-3">
+          <UFormGroup label="Họ và tên">
+            <UInput disabled :model-value="profileState.name"/>
+          </UFormGroup>
+          <UFormGroup label="Địa chỉ email" v-if="profileState.email">
+            <UInput disabled :model-value="profileState.email"/>
+          </UFormGroup>
+        </div>
+        <UDivider label="Thông tin giao nhận"/>
+        <div class="space-y-5">
+          <div v-for="(info, index) in profileState.deliveryInfo" class="p-3 border shadow rounded-md">
+            <div class="space-y-3">
+              <UInput v-model="info.name" placeholder="Tên"/>
+              <UInput v-model="info.email" placeholder="Địa chỉ email"/>
+              <UInput v-model="info.phone" placeholder="Số điện thoại"/>
+              <UTextarea v-model="info.address" placeholder="Địa chỉ"/>
+              <div class="flex justify-between">
+                <UCheckbox label="Mặc định" v-model="info.isDefault" @change="changeIsDefault($event, index)"
+                           :id="useId()"/>
+                <UButton icon="heroicons:minus-small" variant="ghost" color="red"
+                         @click="removeDelivery(index)"/>
+              </div>
+            </div>
           </div>
-        </template>
-        <template #default>
-          <div class="min-h-[50vh]">
-            <UForm class="md:w-96 mx-auto space-y-7" @submit="save" :state="profileState">
-              <UFormGroup label="Họ và tên">
-                <UInput disabled :model-value="profileState.name"/>
-              </UFormGroup>
-              <UFormGroup label="Địa chỉ email" v-if="profileState.email">
-                <UInput disabled :model-value="profileState.email"/>
-              </UFormGroup>
-              <UFormGroup label="Thông tin nhận hàng">
-                <div class="space-y-4">
-                  <UCard v-for="(info, index) in profileState.deliveryInfo">
-                    <template #default>
-                      <div class="space-y-5">
-                        <UFormGroup label="Tên">
-                          <UInput v-model="info.name"/>
-                        </UFormGroup>
-                        <UFormGroup label="Số điện thoại">
-                          <UInput v-model="info.phone"/>
-                        </UFormGroup>
-                        <UFormGroup label="Địa chỉ">
-                          <UTextarea v-model="info.address"/>
-                        </UFormGroup>
-                        <div class="flex justify-between">
-                          <UCheckbox label="Mặc định" v-model="info.isDefault" @change="changeIsDefault($event, index)"
-                                     :id="useId()"/>
-                          <UButton icon="heroicons:minus-small" variant="ghost" color="red"
-                                   @click="removeDelivery(index)"/>
-                        </div>
-                      </div>
-                    </template>
-                  </UCard>
-                  <div class="flex justify-end">
-                    <UButton icon="heroicons:plus-20-solid" color="gray" @click="addDelivery"/>
-                  </div>
-                </div>
-              </UFormGroup>
-              <UButton type="submit" label="Cập nhật" block/>
-            </UForm>
-          </div>
-        </template>
-      </UCard>
+        </div>
+        <UButton color="gray" label="Thêm địa chỉ" @click="addDelivery()" block/>
+        <UButton label="Cập nhật" @click="save" block/>
+      </div>
     </ClientOnly>
   </div>
 </template>
 
 <style scoped>
-
+.card-header {
+  @apply text-lg font-bold
+}
 </style>

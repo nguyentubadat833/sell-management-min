@@ -4,7 +4,6 @@ import {IOrderHistoryReq} from "~/types/TOrder";
 
 export default defineEventHandler(async (event): Promise<IOrderHistoryReq[]> => {
     const session = await getServerSession(event)
-    console.log(session)
     if (session && session.user && 'userId' in session) {
         return prisma.order.findMany({
             where: {
@@ -19,7 +18,7 @@ export default defineEventHandler(async (event): Promise<IOrderHistoryReq[]> => 
             select: {
                 id: true,
                 totalAmount: true,
-                shippingAddress: true,
+                shippingInfo: true,
                 currency: true,
                 orderAt: true,
                 details: {

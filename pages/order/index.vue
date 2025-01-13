@@ -3,12 +3,25 @@ import type {IOrderReq} from "~/types/TOrder";
 import type {IProductCart} from "~/types/TCart";
 
 const {data: authData} = useAuth()
+const {data: deliveryInfo} = await useFetch('/api/client/profile/get-delivery')
 
 const isLoading = ref(false)
 const totalAmount = ref()
 const productsCart = ref<IProductCart[]>([])
+const deliveryInfoDefault = computed(() => {
+  if (deliveryInfo.value && deliveryInfo.value.length > 0) {
+    return deliveryInfo.value.find(e => e.isDefault)
+  } else {
+    return null
+  }
+})
 const orderState = reactive<IOrderReq>({
-  shippingAddress: authData.value?.user?.email as string,
+  shippingInfo: {
+    name: deliveryInfoDefault.value?.name ?? '',
+    address: deliveryInfoDefault.value?.address ?? '',
+    phone: deliveryInfoDefault.value?.phone ?? '',
+    email: deliveryInfoDefault.value?.email ?? authData.value?.user?.email ?? ''
+  },
   shippingMethod: 'Email',
   currency: 'VND',
   details: []
@@ -59,12 +72,18 @@ async function toPayment() {
             <UFormGroup label="Người mua">
               <UInput disabled :model-value="authData?.user?.name"/>
             </UFormGroup>
-            <UFormGroup label="Địa chỉ giao hàng">
-              <UTextarea v-model="orderState.shippingAddress"/>
+            <UFormGroup label="Thôn tin nhận hàng">
+              <div class="space-y-4">
+                <UInput v-model="orderState.shippingInfo.email" placeholder="Địa chỉ nhận"/>
+                <!--                <UInput v-model="orderState.shippingInfo.name" placeholder="Tên người nhận"/>-->
+                <!--                <UInput v-model="orderState.shippingInfo.email" placeholder="Địa chỉ email"/>-->
+                <!--                <UInput v-model="orderState.shippingInfo.phone" placeholder="Số điện thoại"/>-->
+                <!--                <UTextarea v-model="orderState.shippingInfo.address" placeholder="Địa chỉ nhận"/>-->
+              </div>
             </UFormGroup>
-<!--            <UFormGroup label="Đơn vị tiền tệ">-->
-<!--              <UInput disabled v-model="orderState.currency"/>-->
-<!--            </UFormGroup>-->
+            <!--            <UFormGroup label="Đơn vị tiền tệ">-->
+            <!--              <UInput disabled v-model="orderState.currency"/>-->
+            <!--            </UFormGroup>-->
             <UFormGroup label="Sản phẩm đặt mua">
               <div v-for="(product, index) in productsCart">
                 <div
@@ -72,8 +91,8 @@ async function toPayment() {
                   <div class="flex gap-3 w-full">
                     <div
                         class="sm:w-32 w-16 aspect-auto flex-shrink-0 overflow-hidden flex justify-center items-center border dark:border-gray-600">
-                        <NuxtImg :src="getProductImageUrl(product.images[0])"
-                                 class="w-full object-cover"/>
+                      <NuxtImg :src="getProductImageUrl(product.images[0])"
+                               class="w-full object-cover"/>
                     </div>
                     <div class="flex flex-col justify-between w-full">
                   <span @click="navigateTo(`/search/prd/${product.alias}`)"

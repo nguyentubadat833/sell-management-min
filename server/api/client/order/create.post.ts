@@ -1,10 +1,18 @@
-import {IOrderDetailReq, IOrderReq, IOrderRes} from "~/types/TOrder";
+import {IOrderDetailReq, IOrderReq, IOrderRes, IOrderShippingInfo} from "~/types/TOrder";
 import prisma from "~/lib/prisma";
 import _ from "lodash";
+import {Prisma} from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<IOrderRes | undefined> => {
     const req: IOrderReq = await readBody(event)
     const userId = await getUserIdLogged(event)
+    if (!req.shippingInfo?.email) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Email is required'
+        })
+    }
+    const shippingInfo: IOrderShippingInfo = req.shippingInfo
     if (!req?.id) {
         if (!req.details.length) {
             setResponseStatus(event, 204)
@@ -19,7 +27,7 @@ export default defineEventHandler(async (event): Promise<IOrderRes | undefined> 
             data: {
                 customerId: userId,
                 totalAmount: productsOrder.reduce((total, detail) => total + detail.originalPrice, 0),
-                shippingAddress: req.shippingAddress,
+                shippingInfo: shippingInfo as unknown as Prisma.JsonObject,
                 shippingMethod: req.shippingMethod,
                 currency: req.currency,
                 details: {
@@ -60,7 +68,7 @@ export default defineEventHandler(async (event): Promise<IOrderRes | undefined> 
                     },
                     data: {
                         totalAmount: productsOrder.reduce((total, detail) => total + detail.originalPrice, 0),
-                        shippingAddress: req.shippingAddress,
+                        shippingInfo: shippingInfo as unknown as Prisma.JsonObject,
                         shippingMethod: req.shippingMethod,
                         currency: req.currency,
                         details: {
