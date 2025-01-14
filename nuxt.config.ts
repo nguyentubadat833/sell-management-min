@@ -45,6 +45,12 @@ export default defineNuxtConfig({
                 name: process.env.NUXT_VIETQR_BANK_NAME_ACCOUNT
             }
         },
+        payOS: {
+            clientId: process.env.NUXT_PAYOS_CLIENT_ID,
+            apiKey: process.env.NUXT_PAYOS_API_KEY,
+            checksumKey: process.env.NUXT_PAYOS_CHECKSUM_KEY,
+            pageReturn: process.env.NUXT_PAYOS_RETURN_PAGE
+        },
         public: {
             vnPay: {
                 returnUrl: process.env.NUXT_VNPAY_RETURN_URL
@@ -128,6 +134,9 @@ export default defineNuxtConfig({
                 // rel: 'stylesheet'
             }],
             script: [
+                {
+                    src: 'https://cdn.payos.vn/payos-checkout/v1/stable/payos-initialize.js'
+                }
                 // {
                 //     src: 'https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js'
                 // }

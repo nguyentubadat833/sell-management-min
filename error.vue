@@ -19,6 +19,7 @@ const handleError = () => clearError({redirect: '/'})
       <template #default>
         <div class="flex flex-col gap-7">
           <span class="text-2xl text-center"> {{ error?.statusMessage }}</span>
+<!--          <span class="text-xl text-center"> {{ error?.message }}</span>-->
           <UButton @click="handleError" color="gray" block>Về trang chủ</UButton>
         </div>
       </template>

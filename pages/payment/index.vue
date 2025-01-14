@@ -1,93 +1,101 @@
 <script setup lang="ts">
 
 import type {TOrderExchangeRate} from "~/types/TOrder";
-import type {IVnPayCreateUrlReq} from "~/types/TPayment";
-
-type TPaymentMethod = 'paypal' | 'vietqr'
+import type {IVnPayCreateUrlReq, paymentMethod} from "~/types/TPayment";
 
 const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
 const isPaid = ref<boolean | null>(null)
-const isPaypalInitialized= ref(false)
+const isPaypalInitialized = ref(false)
 const vietQRURL = ref<string | null>(null)
-const paymentMethod = ref<TPaymentMethod>()
+const dividerLabel = ref<string>()
+const isLoadPaymentMethod = ref(false)
+const paymentMethod = ref<paymentMethod>()
 
 onMounted(async () => {
-  const result = await $fetch('/api/client/order/isPaid', {
+  await $fetch('/api/client/order/isPaid', {
     params: {
       orderId: orderIdReq.value
     }
+  }).then(result => {
+    isPaid.value = result ?? null
   })
-  isPaid.value = result ?? null
 })
 
-
 async function paymentPaypal() {
-  if (isPaypalInitialized.value) {
-    return
-  }
-  if (isPaid.value !== null) {
+  async function action() {
+    if (paymentMethod.value === 'paypal') {
+      return
+    }
     paymentMethod.value = 'paypal'
-    const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
-      params: {
-        orderId: orderIdReq.value
-      }
-    })
-    if (orderExChange) {
-      isPaypalInitialized.value = true
-      const exchangeRate = orderExChange.exchangeRate as TOrderExchangeRate
-      await usePaypalButton({
-        style: {
-          label: 'paypal',
-          color: 'blue'
-        },
-        createOrder: (data, actions) => {
-          return actions.order.create({
-            purchase_units: [
-              {
-                amount: {
-                  value: `${exchangeRate.USD}`,
-                  currency_code: `USD`,
-                },
-                description: JSON.stringify({orderId: orderIdReq.value})
+    dividerLabel.value = 'Thanh toán paypal'
+    if (isPaid.value !== null) {
+      const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
+        params: {
+          orderId: orderIdReq.value
+        }
+      })
+      if (orderExChange) {
+        isPaypalInitialized.value = true
+        const exchangeRate = orderExChange.exchangeRate as TOrderExchangeRate
+        await usePaypalButton({
+          style: {
+            label: 'paypal',
+            color: 'blue'
+          },
+          createOrder: (data, actions) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: {
+                    value: `${exchangeRate.USD}`,
+                    currency_code: `USD`,
+                  },
+                  description: JSON.stringify({orderId: orderIdReq.value})
+                }
+              ],
+            });
+          },
+          onApprove: async (data, actions) => {
+            try {
+              const paypalRes = await actions.order?.capture();
+              const paymentRes = await $fetch('/api/client/payment/paypal', {
+                method: 'POST',
+                body: paypalRes
+              })
+              if (paymentRes) {
+                reloadNuxtApp()
               }
-            ],
-          });
-        },
-        onApprove: async (data, actions) => {
-          try {
-            const paypalRes = await actions.order?.capture();
-            const paymentRes = await $fetch('/api/client/payment/paypal', {
-              method: 'POST',
-              body: paypalRes
-            })
-            if (paymentRes) {
-              reloadNuxtApp()
+            } catch (error) {
+              console.error('Error capturing payment:', error);
             }
-          } catch (error) {
-            console.error('Error capturing payment:', error);
-          }
-        },
-        onError: (err) => {
-          console.error("Error during transaction:", err);
-        },
-      })
-    } else {
-      useToast().add({
-        title: 'Không thể thanh toán',
-        color: "red",
-        description: 'Đơn hàng này không tồn tại',
-        actions: [
-          {
-            label: 'Về giỏ hàng',
-            click: () => navigateTo('/cart')
-          }, {
-            label: 'Xem các đơn hàng',
-            click: () => navigateTo('/order/history')
-          }
-        ]
-      })
+          },
+          onError: (err) => {
+            console.error("Error during transaction:", err);
+          },
+        })
+      } else {
+        useToast().add({
+          title: 'Không thể thanh toán',
+          color: "red",
+          description: 'Đơn hàng này không tồn tại',
+          actions: [
+            {
+              label: 'Về giỏ hàng',
+              click: () => navigateTo('/cart')
+            }, {
+              label: 'Xem các đơn hàng',
+              click: () => navigateTo('/order/history')
+            }
+          ]
+        })
+      }
     }
   }
+
+  isLoadPaymentMethod.value = true
+  await action().finally(() => {
+    isLoadPaymentMethod.value = false
+  })
 }
 
 async function paymentVNPAY() {
@@ -103,11 +111,29 @@ async function paymentVNPAY() {
 }
 
 async function paymentVietQR() {
-  const qrUrl = await $fetch('/api/client/payment/vietqr/create-qr')
-  if (qrUrl) {
-    vietQRURL.value = qrUrl as string
-    paymentMethod.value = 'vietqr'
-  }
+  // isLoadPaymentMethod.value = true
+  // await $fetch('/api/client/payment/vietqr/create-qr', {
+  //   params: {
+  //     orderId: orderIdReq.value
+  //   }
+  // }).then(data => {
+  //   if (data) {
+  //     vietQRURL.value = data as string
+  //     paymentMethod.value = 'vietqr'
+  //     dividerLabel.value = 'Thanh toán QR'
+  //   }
+  // }).finally(() => {
+  //   isLoadPaymentMethod.value = false
+  // })
+
+  await $fetch('/api/client/payment/payos/create-payment-link', {
+    params: {
+      orderId: orderIdReq.value
+    }
+  })
+      .then(res => {
+        console.log(res)
+      })
 }
 </script>
 
@@ -146,17 +172,15 @@ async function paymentVietQR() {
                   </div>
                 </div>
               </div>
-              <div class="p-3 bg-white">
-                <div v-show="paymentMethod === 'paypal'">
-                  <UDivider label="Thanh toán qua Paypal" class="py-5"/>
-                  <div id="paypal-checkout">
+              <div v-show="!isLoadPaymentMethod && paymentMethod">
+                <UDivider :label="dividerLabel" class="py-5"/>
+                <div :class="{'bg-white rounded-md p-4': paymentMethod}">
+                  <div v-if="paymentMethod === 'paypal'" id="paypal-checkout">
                   </div>
-                </div>
-                <div v-show="paymentMethod === 'vietqr'">
-                  <UDivider label="Thanh toán chuyển khoản" class="py-5"/>
-                  <NuxtImg :src="vietQRURL" class="mx-auto"/>
+                  <NuxtImg v-else-if="paymentMethod === 'vietqr' && vietQRURL" :src="vietQRURL" class="mx-auto"/>
                 </div>
               </div>
+              <USkeleton v-show="isLoadPaymentMethod" class="h-72 w-full mt-5"/>
             </div>
             <div v-else class="flex items-center gap-2">
               <Icon name="mdi:checkbox-marked-circle-outline" size="40" class="text-green-600"/>

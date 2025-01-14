@@ -23,7 +23,7 @@ const message = computed(() => {
       <template #header>
         <div class="flex items-center gap-2">
           <Icon name="ic:outline-payments" size="25"/>
-          <div class="font-bold text-lg">Trạng thái giao dịch</div>
+          <div class="font-bold text-lg">Giao dịch VNPAY</div>
         </div>
       </template>
       <template #default>

@@ -17,6 +17,7 @@
     "@nuxt/ui": "^2.18.7",
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/ngrok": "^3.0.1",
+    "@payos/node": "^1.0.10",
     "@prisma/nuxt": "^0.0.31",
     "@sidebase/nuxt-auth": "^0.10.0-rc.2",
     "@tailwindcss/line-clamp": "^0.4.4",
