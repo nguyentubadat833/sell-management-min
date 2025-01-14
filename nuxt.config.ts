@@ -30,13 +30,23 @@ export default defineNuxtConfig({
                 secret: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
             }
         },
-        vnpay: {
+        vnPay: {
             tmnCode: process.env.NUXT_VNPAY_TMN_CODE,
             secretKey: process.env.NUXT_VNPAY_SECRET_KEY,
             paymentUrl: process.env.NUXT_VNPAY_URL_PAYMENT
         },
+        vietQR: {
+            generateQrUrl: process.env.NUXT_VIETQR_GENERATE_QR_URL,
+            clientId: process.env.NUXT_VIETQR_CLIENT_ID,
+            apiKey: process.env.NUXT_VIETQR_API_KEY,
+            bankId: process.env.NUXT_VIETQR_BANK_ID,
+            bankAccount: {
+                number: process.env.NUXT_VIETQR_BANK_NUMBER_ACCOUNT,
+                name: process.env.NUXT_VIETQR_BANK_NAME_ACCOUNT
+            }
+        },
         public: {
-            vnpay: {
+            vnPay: {
                 returnUrl: process.env.NUXT_VNPAY_RETURN_URL
             }
         }

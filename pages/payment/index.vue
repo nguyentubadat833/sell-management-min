@@ -3,10 +3,13 @@
 import type {TOrderExchangeRate} from "~/types/TOrder";
 import type {IVnPayCreateUrlReq} from "~/types/TPayment";
 
+type TPaymentMethod = 'paypal' | 'vietqr'
+
 const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
-const isPaymentPaypal = ref(false)
-const isPaypalInitialized = ref(false)
 const isPaid = ref<boolean | null>(null)
+const isPaypalInitialized= ref(false)
+const vietQRURL = ref<string | null>(null)
+const paymentMethod = ref<TPaymentMethod>()
 
 onMounted(async () => {
   const result = await $fetch('/api/client/order/isPaid', {
@@ -23,7 +26,7 @@ async function paymentPaypal() {
     return
   }
   if (isPaid.value !== null) {
-    isPaymentPaypal.value = true
+    paymentMethod.value = 'paypal'
     const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
       params: {
         orderId: orderIdReq.value
@@ -98,6 +101,14 @@ async function paymentVNPAY() {
     external: true
   })
 }
+
+async function paymentVietQR() {
+  const qrUrl = await $fetch('/api/client/payment/vietqr/create-qr')
+  if (qrUrl) {
+    vietQRURL.value = qrUrl as string
+    paymentMethod.value = 'vietqr'
+  }
+}
 </script>
 
 <template>
@@ -119,18 +130,31 @@ async function paymentVNPAY() {
           </template>
           <template #default>
             <div v-if="!isPaid">
-              <div class="flex justify-center">
+              <div class="flex justify-center mt-2">
                 <div class="payment-group flex items-center gap-5">
                   <div class="payment-group-wrapper-img" @click="paymentPaypal">
                     <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
                   </div>
-                  <div @click="paymentVNPAY" class="payment-group-wrapper-img">
+                  <div class="payment-group-wrapper-img" @click="paymentVNPAY">
                     <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
+                  </div>
+                  <div class="payment-group-wrapper-img" @click="paymentVietQR">
+                    <NuxtImg src="/images/icon/vietqr.png" class="payment-group-img"/>
+                  </div>
+                  <div class="payment-group-wrapper-img">
+                    <NuxtImg src="/images/icon/cod.png" class="payment-group-img"/>
                   </div>
                 </div>
               </div>
-              <div v-show="isPaymentPaypal" class="p-3 mt-3 bg-white">
-                <div id="paypal-checkout">
+              <div class="p-3 bg-white">
+                <div v-show="paymentMethod === 'paypal'">
+                  <UDivider label="Thanh toán qua Paypal" class="py-5"/>
+                  <div id="paypal-checkout">
+                  </div>
+                </div>
+                <div v-show="paymentMethod === 'vietqr'">
+                  <UDivider label="Thanh toán chuyển khoản" class="py-5"/>
+                  <NuxtImg :src="vietQRURL" class="mx-auto"/>
                 </div>
               </div>
             </div>

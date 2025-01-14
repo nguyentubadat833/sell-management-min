@@ -2,11 +2,11 @@ import * as querystring from "qs";
 import crypto from "crypto";
 
 export default function () {
-    const {vnpay, public: publicENV} = useRuntimeConfig()
-    const tmnCode = vnpay.tmnCode
-    const secretKey = vnpay.secretKey
-    const paymentUrl = vnpay.paymentUrl
-    const returnURL = publicENV.vnpay.returnUrl
+    const {vnPay, public: publicENV} = useRuntimeConfig()
+    const tmnCode = vnPay.tmnCode
+    const secretKey = vnPay.secretKey
+    const paymentUrl = vnPay.paymentUrl
+    const returnURL = publicENV.vnPay.returnUrl
 
     function generateSigned(vnp_Params: any) {
         let signData = querystring.stringify(vnp_Params, {encode: false});

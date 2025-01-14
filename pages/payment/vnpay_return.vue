@@ -30,7 +30,7 @@ const message = computed(() => {
         <div class="flex items-center gap-2">
           <Icon v-if="isValid" name="mdi:checkbox-marked-circle-outline" size="40" class="text-green-600"/>
           <Icon v-else name="heroicons:exclamation-triangle-16-solid" size="40" class="text-red-500"/>
-          <span>{{ message }}</span>
+          <span class="font-medium">{{ message }}</span>
         </div>
       </template>
     </UCard>
