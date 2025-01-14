@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
         if (order) {
             if (order.status === 1) {
                 const payment = order?.payment
-                console.log(order)
                 setResponseStatus(event, 200)
                 return !!(payment && payment.status === 1);
             }

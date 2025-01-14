@@ -35,9 +35,9 @@ export default defineEventHandler(async (event) => {
         return prisma.payment.create({
             data: paymentDataInit,
             select: {
-                id: true
+                amount: true
             }
-        });
+        }).then(data => data.amount);
     }
 })
 

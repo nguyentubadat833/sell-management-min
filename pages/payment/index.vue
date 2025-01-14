@@ -3,38 +3,26 @@
 import type {TOrderExchangeRate} from "~/types/TOrder";
 import type {IVnPayCreateUrlReq} from "~/types/TPayment";
 
-const orderIdReq = ref()
+const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
 const isPaymentPaypal = ref(false)
 const isPaypalInitialized = ref(false)
-const isPayment = ref(false)
+const isPaid = ref<boolean | null>(null)
 
-onBeforeMount(async () => {
-  orderIdReq.value = useRoute().query?.orderId
-  await $fetch('/api/client/order/isPaid', {
+onMounted(async () => {
+  const result = await $fetch('/api/client/order/isPaid', {
     params: {
       orderId: orderIdReq.value
     }
-  }).then(value => {
-    if (value === false) {
-      isPayment.value = true
-    }
   })
+  isPaid.value = result ?? null
 })
 
-async function getOrderData() {
-  return await $fetch(`/api/client/order/get`, {
-    params: {
-      id: orderIdReq.value
-    }
-  })
-}
 
 async function paymentPaypal() {
   if (isPaypalInitialized.value) {
     return
   }
-  const orderData = await getOrderData()
-  if (orderData) {
+  if (isPaid.value !== null) {
     isPaymentPaypal.value = true
     const orderExChange = await $fetch('/api/client/order/exchange/vnd-to-usd', {
       params: {
@@ -70,13 +58,12 @@ async function paymentPaypal() {
               body: paypalRes
             })
             if (paymentRes) {
-              isPayment.value = false
+              reloadNuxtApp()
             }
           } catch (error) {
             console.error('Error capturing payment:', error);
           }
         },
-
         onError: (err) => {
           console.error("Error during transaction:", err);
         },
@@ -131,7 +118,7 @@ async function paymentVNPAY() {
             </div>
           </template>
           <template #default>
-            <div v-if="isPayment">
+            <div v-if="!isPaid">
               <div class="flex justify-center">
                 <div class="payment-group flex items-center gap-5">
                   <div class="payment-group-wrapper-img" @click="paymentPaypal">

@@ -7,10 +7,11 @@ const {data, refresh} = await useFetch('/api/client/order/history', {
     return value as IOrderHistoryReq[]
   }
 })
-console.log(data.value)
 const formatDate = (datetime: string) => datetime.split("T")[0];
 const groupedOrders = computed(() => {
-  const groups = {} as any;
+  const groups: {
+    [date: string]: IOrderHistoryReq[]
+  } = {};
   data.value?.forEach((order) => {
     const date = formatDate(order.orderAt);
     if (!groups[date]) {
@@ -22,7 +23,6 @@ const groupedOrders = computed(() => {
 });
 
 function deleteOrder(id: string) {
-  console.log(id)
   toast.add({
     title: 'Xóa đơn hàng',
     description: `${id}`,
@@ -94,7 +94,7 @@ function toPayment(id: string) {
                       <Icon name="ic:baseline-mail-outline" size="18"/>
                       <span class="font-medium">Địa chỉ nhận: </span>
                     </div>
-                    <span class="ml-6">{{ order.shippingAddress }}</span>
+                    <span class="ml-6">{{ order.shippingInfo?.email }}</span>
                   </div>
                   <div>
                     <div class="flex items-center gap-1">
@@ -123,12 +123,12 @@ function toPayment(id: string) {
                class="overflow-hidden transition-[max-height] ease-in-out group-active:duration-700 group-hover:duration-700 group-hover:max-h-96 group-active:max-h-96 duration-300 max-h-0"
           >
             <div class="flex justify-between items-center py-6">
-              <div @click="deleteOrder(order?.id)"
+              <div @click="deleteOrder(order.id)"
                    class="text-gray-500 text-sm font-medium cursor-pointer flex items-center gap-1">
                 <Icon name="ic:round-delete"/>
                 <span>Xóa đơn hàng</span>
               </div>
-              <UBadge color="red" variant="solid" class="cursor-pointer" @click="toPayment(order?.id)">Tiến hành thanh
+              <UBadge color="red" variant="solid" class="cursor-pointer" @click="toPayment(order.id)">Tiến hành thanh
                 toán
               </UBadge>
             </div>
