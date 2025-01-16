@@ -2,7 +2,7 @@
 
 import QrcodeVue from 'qrcode.vue'
 import type {TOrderExchangeRate} from "~/types/TOrder";
-import type {IVnPayCreateUrlReq, paymentMethod} from "~/types/TPayment";
+import type {IVnPayCreateUrlReq, TPaymentMethod} from "~/types/TPayment";
 import type {CheckoutResponseDataType} from "@payos/node/lib/type";
 
 const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
@@ -11,7 +11,7 @@ const isPaypalInitialized = ref(false)
 const vietQRURL = ref<string | null>(null)
 const dividerLabel = ref<string>()
 const isLoadPaymentMethod = ref(false)
-const paymentMethod = ref<paymentMethod>()
+const paymentMethod = ref<TPaymentMethod>()
 const payOSData = ref<CheckoutResponseDataType>()
 
 onMounted(async () => {
@@ -43,7 +43,7 @@ async function paymentPaypal() {
         await usePaypalButton({
           style: {
             label: 'paypal',
-            color: 'blue'
+            color: 'blue',
           },
           createOrder: (data, actions) => {
             return actions.order.create({
@@ -61,7 +61,7 @@ async function paymentPaypal() {
           onApprove: async (data, actions) => {
             try {
               const paypalRes = await actions.order?.capture();
-              const paymentRes = await $fetch('/api/client/payment/paypal', {
+              const paymentRes = await $fetch('/api/client/payment/paypal/approve', {
                 method: 'POST',
                 body: paypalRes
               })
@@ -138,7 +138,7 @@ async function paymentVietQR() {
     if (data) {
       console.log(data)
       payOSData.value = data
-      paymentMethod.value = 'qrcode'
+      paymentMethod.value = 'payos'
       dividerLabel.value = 'Thanh toán QR'
     }
   }).finally(() => {
@@ -189,7 +189,7 @@ async function paymentVietQR() {
                   <div v-if="paymentMethod === 'paypal'" id="paypal-checkout">
                   </div>
                   <!--                  <NuxtImg v-else-if="paymentMethod === 'vietqr' && vietQRURL" :src="vietQRURL" class="mx-auto"/>-->
-                  <div v-else-if="paymentMethod === 'qrcode' && payOSData" class="grid grid-cols-2 gap-4">
+                  <div v-else-if="paymentMethod === 'payos' && payOSData" class="grid grid-cols-2 gap-4">
                     <div class="flex justify-end">
                       <div class="border p-3">
                         <QrcodeVue :size="useDevice().isMobile ? 150 : 260" :value="payOSData.qrCode"/>

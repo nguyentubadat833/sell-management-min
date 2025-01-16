@@ -1,4 +1,5 @@
 export enum EUserType {
+    SYSTEM = "SYSTEM",
     CONTROL = "CONTROL",
     CUSTOMER = "CUSTOMER",
 }

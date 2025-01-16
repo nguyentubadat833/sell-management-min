@@ -1,11 +1,11 @@
-export type paymentMethod = 'paypal' | 'vnpay' | 'qrcode' | 'cod'
+export type TPaymentMethod = 'paypal' | 'vnpay' | 'payos' | 'cod'
 
 export interface IPaypalReq {
     orderId: string
     transactionId: string
     amount: number
     currency: string
-    paymentMethod: paymentMethod
+    paymentMethod: TPaymentMethod
     details: {
         payer: any
         payments: any

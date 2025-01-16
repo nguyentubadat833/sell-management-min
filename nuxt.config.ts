@@ -2,6 +2,9 @@
 // import fs from 'fs';
 // import path from 'path';
 
+import configs from "./configs";
+import type {TPaymentMethod} from "~/types/TPayment";
+
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     devServer: {
@@ -30,6 +33,9 @@ export default defineNuxtConfig({
                 secret: process.env.NUXT_AUTH_GOOGLE_CLIENT_SECRET
             }
         },
+        paypal: {
+            clientId: process.env.NUXT_PAYPAL_CLIENT_ID
+        },
         vnPay: {
             tmnCode: process.env.NUXT_VNPAY_TMN_CODE,
             secretKey: process.env.NUXT_VNPAY_SECRET_KEY,
@@ -52,6 +58,7 @@ export default defineNuxtConfig({
             pageReturn: process.env.NUXT_PAYOS_RETURN_PAGE
         },
         public: {
+            acceptPaymentMethods: (convertAcceptMethods(process.env.NUXT_APP_ACCEPT_PAYMENT_METHODS) ?? configs.validPaymentMethods) as TPaymentMethod[],
             vnPay: {
                 returnUrl: process.env.NUXT_VNPAY_RETURN_URL
             }
@@ -71,7 +78,7 @@ export default defineNuxtConfig({
         '@nuxtjs/ngrok'
     ],
     paypal: {
-        clientId: 'AekPE1obxYWN4XbykdUaAOnC3imQBfKw-5z8iXwwNhxo3iURtz27voWVNWdLroHkmg5gKl8P3Nfnzzpl',
+        clientId: process.env.NUXT_PAYPAL_CLIENT_ID,
     },
     ngrok: {
         authtoken_from_env: true
@@ -114,9 +121,9 @@ export default defineNuxtConfig({
     },
     experimental: {
         asyncContext: true,
-        // componentIslands: {
-        //     selectiveClient: 'deep'
-        // }
+        componentIslands: {
+            selectiveClient: "deep"
+        }
     },
     vite: {
         resolve: {
@@ -144,3 +151,20 @@ export default defineNuxtConfig({
         }
     }
 })
+
+function convertAcceptMethods(input: string | undefined): TPaymentMethod[] | null {
+    if (!input) return null;
+
+    const result = input.split(',').filter(Boolean);
+    if (result.length > 0) {
+        const validPaymentMethods = configs.validPaymentMethods
+        result.forEach(e => {
+            if (!validPaymentMethods.includes(e as TPaymentMethod)) {
+                throw new Error(`Invalid payment method: ${e}. The valid methods include: ${validPaymentMethods}`)
+            }
+        })
+        return result as TPaymentMethod[]
+    } else {
+        return null
+    }
+}
