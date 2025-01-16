@@ -192,17 +192,17 @@ async function paymentVietQR() {
                   <div v-else-if="paymentMethod === 'payos' && payOSData" class="grid grid-cols-2 gap-4">
                     <div class="flex justify-end">
                       <div class="border p-3">
-                        <QrcodeVue :size="useDevice().isMobile ? 150 : 260" :value="payOSData.qrCode"/>
+                        <QrcodeVue :size="useDevice().isMobile ? 150 : 260" :value="payOSData?.qrCode"/>
                       </div>
                     </div>
                     <div class="qrcode-info">
                       <div>
                         <Icon name="material-symbols-light:account-box-sharp" size="30"/>
-                        <span>{{ payOSData.accountName }}</span>
+                        <span>{{ payOSData?.accountName }}</span>
                       </div>
                       <div>
                         <Icon name="material-symbols-light:payments-outline-sharp" size="30"/>
-                        <span>{{ formatNumber(payOSData.amount) }}</span>
+                        <span>{{ formatNumber(payOSData?.amount) }}</span>
                       </div>
                     </div>
                   </div>
