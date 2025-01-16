@@ -15,7 +15,7 @@ export default defineNitroPlugin(async (nitroApp) => {
                     throw new Error('RuntimeConfig required clientId')
                 }
             } else if (e === 'vnpay') {
-                if (!vnPay || vnPay?.tmnCode || vnPay?.secretKey || vnPay?.paymentUrl) {
+                if (!vnPay || !vnPay?.tmnCode || !vnPay?.secretKey || !vnPay?.paymentUrl) {
                     throw new Error('RuntimeConfig required vnPay(tmnCode, secretKey, paymentUrl)')
                 }
             } else if (e === 'payos') {

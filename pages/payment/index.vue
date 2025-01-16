@@ -5,6 +5,7 @@ import type {TOrderExchangeRate} from "~/types/TOrder";
 import type {IVnPayCreateUrlReq, TPaymentMethod} from "~/types/TPayment";
 import type {CheckoutResponseDataType} from "@payos/node/lib/type";
 
+const runtimeConfig = useRuntimeConfig()
 const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
 const isPaid = ref<boolean | null>(null)
 const isPaypalInitialized = ref(false)
@@ -13,6 +14,7 @@ const dividerLabel = ref<string>()
 const isLoadPaymentMethod = ref(false)
 const paymentMethod = ref<TPaymentMethod>()
 const payOSData = ref<CheckoutResponseDataType>()
+const methods = runtimeConfig?.public?.acceptPaymentMethods as TPaymentMethod[]
 
 onMounted(async () => {
   await $fetch('/api/client/order/isPaid', {
@@ -113,7 +115,7 @@ async function paymentVNPAY() {
   })
 }
 
-async function paymentVietQR() {
+async function paymentPayOS() {
   // isLoadPaymentMethod.value = true
   // await $fetch('/api/client/payment/vietqr/create-qr', {
   //   params: {
@@ -136,7 +138,6 @@ async function paymentVietQR() {
     }
   }).then(data => {
     if (data) {
-      console.log(data)
       payOSData.value = data
       paymentMethod.value = 'payos'
       dividerLabel.value = 'Thanh toán QR'
@@ -169,16 +170,16 @@ async function paymentVietQR() {
               <div class="flex justify-center mt-2">
                 <!--                <div class="payment-group flex items-center gap-5">-->
                 <div class="payment-group grid md:grid-cols-4 grid-cols-2 md:gap-5 gap-2">
-                  <div class="payment-group-wrapper-img" @click="paymentVietQR">
+                  <div class="payment-group-wrapper-img" @click="paymentPayOS" v-if="methods.includes('payos')">
                     <NuxtImg src="/images/icon/qrcode.svg" class="payment-group-img p-4"/>
                   </div>
-                  <div class="payment-group-wrapper-img">
+                  <div class="payment-group-wrapper-img" v-if="methods.includes('cod')">
                     <NuxtImg src="/images/icon/cod.png" class="payment-group-img p-1 pt-4"/>
                   </div>
-                  <div class="payment-group-wrapper-img" @click="paymentVNPAY">
+                  <div class="payment-group-wrapper-img" @click="paymentVNPAY" v-if="methods.includes('vnpay')">
                     <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
                   </div>
-                  <div class="payment-group-wrapper-img" @click="paymentPaypal">
+                  <div class="payment-group-wrapper-img" @click="paymentPaypal" v-if="methods.includes('paypal')">
                     <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
                   </div>
                 </div>
