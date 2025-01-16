@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
+import QrcodeVue from 'qrcode.vue'
 import type {TOrderExchangeRate} from "~/types/TOrder";
 import type {IVnPayCreateUrlReq, paymentMethod} from "~/types/TPayment";
+import type {CheckoutResponseDataType} from "@payos/node/lib/type";
 
 const orderIdReq = useState(useId(), () => useRoute().query?.orderId)
 const isPaid = ref<boolean | null>(null)
@@ -10,6 +12,7 @@ const vietQRURL = ref<string | null>(null)
 const dividerLabel = ref<string>()
 const isLoadPaymentMethod = ref(false)
 const paymentMethod = ref<paymentMethod>()
+const payOSData = ref<CheckoutResponseDataType>()
 
 onMounted(async () => {
   await $fetch('/api/client/order/isPaid', {
@@ -126,14 +129,21 @@ async function paymentVietQR() {
   //   isLoadPaymentMethod.value = false
   // })
 
+  isLoadPaymentMethod.value = true
   await $fetch('/api/client/payment/payos/create-payment-link', {
     params: {
       orderId: orderIdReq.value
     }
+  }).then(data => {
+    if (data) {
+      console.log(data)
+      payOSData.value = data
+      paymentMethod.value = 'qrcode'
+      dividerLabel.value = 'Thanh toán QR'
+    }
+  }).finally(() => {
+    isLoadPaymentMethod.value = false
   })
-      .then(res => {
-        console.log(res)
-      })
 }
 </script>
 
@@ -157,18 +167,19 @@ async function paymentVietQR() {
           <template #default>
             <div v-if="!isPaid">
               <div class="flex justify-center mt-2">
-                <div class="payment-group flex items-center gap-5">
-                  <div class="payment-group-wrapper-img" @click="paymentPaypal">
-                    <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
+                <!--                <div class="payment-group flex items-center gap-5">-->
+                <div class="payment-group grid md:grid-cols-4 grid-cols-2 md:gap-5 gap-2">
+                  <div class="payment-group-wrapper-img" @click="paymentVietQR">
+                    <NuxtImg src="/images/icon/qrcode.svg" class="payment-group-img p-4"/>
+                  </div>
+                  <div class="payment-group-wrapper-img">
+                    <NuxtImg src="/images/icon/cod.png" class="payment-group-img p-1 pt-4"/>
                   </div>
                   <div class="payment-group-wrapper-img" @click="paymentVNPAY">
                     <NuxtImg src="/images/icon/vnpay.svg" class="payment-group-img"/>
                   </div>
-                  <div class="payment-group-wrapper-img" @click="paymentVietQR">
-                    <NuxtImg src="/images/icon/vietqr.png" class="payment-group-img"/>
-                  </div>
-                  <div class="payment-group-wrapper-img">
-                    <NuxtImg src="/images/icon/cod.png" class="payment-group-img"/>
+                  <div class="payment-group-wrapper-img" @click="paymentPaypal">
+                    <NuxtImg src="/images/icon/paypal.svg" class="payment-group-img"/>
                   </div>
                 </div>
               </div>
@@ -177,7 +188,24 @@ async function paymentVietQR() {
                 <div :class="{'bg-white rounded-md p-4': paymentMethod}">
                   <div v-if="paymentMethod === 'paypal'" id="paypal-checkout">
                   </div>
-                  <NuxtImg v-else-if="paymentMethod === 'vietqr' && vietQRURL" :src="vietQRURL" class="mx-auto"/>
+                  <!--                  <NuxtImg v-else-if="paymentMethod === 'vietqr' && vietQRURL" :src="vietQRURL" class="mx-auto"/>-->
+                  <div v-else-if="paymentMethod === 'qrcode' && payOSData" class="grid grid-cols-2 gap-4">
+                    <div class="flex justify-end">
+                      <div class="border p-3">
+                        <QrcodeVue :size="useDevice().isMobile ? 150 : 260" :value="payOSData.qrCode"/>
+                      </div>
+                    </div>
+                    <div class="qrcode-info">
+                      <div>
+                        <Icon name="material-symbols-light:account-box-sharp" size="30"/>
+                        <span>{{ payOSData.accountName }}</span>
+                      </div>
+                      <div>
+                        <Icon name="material-symbols-light:payments-outline-sharp" size="30"/>
+                        <span>{{ formatNumber(payOSData.amount) }}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <USkeleton v-show="isLoadPaymentMethod" class="h-72 w-full mt-5"/>
@@ -194,13 +222,35 @@ async function paymentVietQR() {
 </template>
 
 <style scoped>
+.qrcode-info {
+  @apply flex flex-col justify-center space-y-1;
+
+  div {
+    @apply flex items-center gap-2;
+
+    span {
+      @apply font-bold
+    }
+  }
+}
+
 .payment-group {
   .payment-group-wrapper-img {
-    @apply rounded-lg border-2 h-24 flex items-center p-5 dark:border-gray-700 cursor-pointer;
+    @apply shadow rounded-lg aspect-[6/4] flex items-center justify-center py-2 px-4 overflow-hidden border dark:border-gray-700 cursor-pointer;
 
     .payment-group-img {
-      @apply w-32
+      @apply w-full;
     }
   }
 }
 </style>
+
+<!--.payment-group {-->
+<!--.payment-group-wrapper-img {-->
+<!--@apply rounded-lg border-2 h-24 flex items-center p-5 dark:border-gray-700 cursor-pointer overflow-hidden;-->
+
+<!--.payment-group-img {-->
+<!--@apply w-32-->
+<!--}-->
+<!--}-->
+<!--}-->

@@ -1,4 +1,4 @@
-export type paymentMethod = 'paypal' | 'vnpay' | 'vietqr'
+export type paymentMethod = 'paypal' | 'vnpay' | 'qrcode' | 'cod'
 
 export interface IPaypalReq {
     orderId: string
