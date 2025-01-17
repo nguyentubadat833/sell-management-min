@@ -4,6 +4,7 @@
 
 import configs from "./configs";
 import type {TPaymentMethod} from "~/types/TPayment";
+import _ from "lodash";
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
@@ -24,7 +25,7 @@ export default defineNuxtConfig({
         app: {
             isUseWarehouse: process.env.NUXT_APP_IS_USE_WAREHOUSE ?? false,
             isUseReceiveInventory: process.env.NUXT_APP_IS_USE_RECEIVE_INVENTORY ?? false,
-            fileStorageRoot: process.env.NUXT_APP_STORAGE_FILE_MOUNT
+            fileStorageRoot: verifyStringEnv(process.env.NUXT_APP_STORAGE_FILE_MOUNT, 'App required fileStorageRoot')
         },
         auth: {
             secret: process.env.NUXT_AUTH_SECRET,
@@ -166,5 +167,13 @@ function convertAcceptMethods(input: string | undefined): TPaymentMethod[] | nul
         return result as TPaymentMethod[]
     } else {
         return null
+    }
+}
+
+function verifyStringEnv(input: string | undefined, errorMessage: string) {
+    if (_.isString(input)) {
+        return input
+    } else {
+        throw new Error(errorMessage)
     }
 }

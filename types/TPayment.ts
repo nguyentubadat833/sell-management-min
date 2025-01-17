@@ -15,13 +15,15 @@ export interface IPaypalReq {
     paymentAt: any
     paymentCompleteAt?: any
 }
+
 export interface IVnPayCreateUrlReq {
     orderId: string,
     bankCode?: string,
     language?: 'vn' | 'en',
     orderType?: string
 }
-export interface IVnPayDetails{
+
+export interface IVnPayDetails {
     ipAddr: string,
     currCode: string,
     tnx: string
@@ -46,7 +48,7 @@ export enum EVnPayRsp {
     C99 = 'Lỗi không xác định'
 }
 
-export interface IVietQRCreateRes{
+export interface IVietQRCreateRes {
     code: string
     desc: string
     data: {
@@ -55,4 +57,21 @@ export interface IVietQRCreateRes{
         qrCode: string
         qrDataURL: string
     }
+}
+
+export interface IPayOSDetails {
+    order: {
+        bin: string,
+        accountNumber: string,
+        accountName: string,
+        amount: number,
+        description: string,
+        orderCode: number,
+        currency: string,
+        paymentLinkId: string,
+        status: string,
+        checkoutUrl: string
+        qrCode?: string
+    }
+    paymentLink: {}
 }

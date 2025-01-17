@@ -1,6 +1,7 @@
 import moment from "moment/moment";
 import prisma from "~/lib/prisma";
 import _ from "lodash";
+import {IPayOSDetails} from "~/types/TPayment";
 
 export default defineEventHandler(async (event) => {
     const {orderId} = getQuery(event)
@@ -9,6 +10,11 @@ export default defineEventHandler(async (event) => {
         const order = await prisma.order.findUnique({
             where: {
                 id: orderId
+            },
+            select: {
+                id: true,
+                totalAmount: true,
+                payment: true
             }
         })
         if (order) {
@@ -21,9 +27,10 @@ export default defineEventHandler(async (event) => {
                 cancelUrl: createUrl(pageReturn, {cancel: true}),
                 returnUrl: createUrl(pageReturn),
             };
-
+            const payOSOrder = (order?.payment?.details as unknown as IPayOSDetails)?.order
             try {
-                return await payOS.createPaymentLink(body)
+                const payOSPaymentCheckout = await payOS.createPaymentLink(body)
+                return payOSPaymentCheckout
             } catch (e: any) {
                 console.log('error: ', e)
                 throw e
